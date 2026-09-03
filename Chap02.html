@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二章：變數、資料型態與輸出入 - 互動學習平台</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        .code-font {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="bg-amber-500 text-slate-900 font-bold px-2.5 py-1 rounded text-sm tracking-wide">Ch02</span>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">變數、資料型態與輸出入</h1>
+                    <p class="text-xs text-slate-400">Variables, Data Types, and Input/Output - 數位互動課程系統</p>
+                </div>
+            </div>
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-1 text-sm font-medium mt-2 md:mt-0" id="main-nav">
+                <button onclick="switchTab('memory')" class="nav-btn px-3 py-1.5 rounded-md transition text-amber-400 bg-slate-800" data-tab="memory">變數與記憶體</button>
+                <button onclick="switchTab('naming')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="naming">命名規則</button>
+                <button onclick="switchTab('types')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="types">型態轉換</button>
+                <button onclick="switchTab('print')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="print">print()格式化</button>
+                <button onclick="switchTab('input')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="input">input()與split</button>
+                <button onclick="switchTab('lab')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="lab">實作模擬器</button>
+                <button onclick="switchTab('quiz')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="quiz">隨堂測驗</button>
+            </nav>
+        </div>
+        <!-- Mobile Nav Menu -->
+        <div class="md:hidden flex overflow-x-auto px-4 py-2 space-x-2 text-xs bg-slate-800 scrollbar-none">
+            <button onclick="switchTab('memory')" class="nav-btn-m px-2.5 py-1 rounded bg-amber-500 text-slate-900 font-bold whitespace-nowrap" data-tab="memory">變數記憶體</button>
+            <button onclick="switchTab('naming')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="naming">命名規則</button>
+            <button onclick="switchTab('types')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="types">型態轉換</button>
+            <button onclick="switchTab('print')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="print">print()格式化</button>
+            <button onclick="switchTab('input')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="input">input()與split</button>
+            <button onclick="switchTab('lab')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="lab">實作模擬器</button>
+            <button onclick="switchTab('quiz')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="quiz">隨堂測驗</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: 變數與記憶體 -->
+        <section id="tab-memory" class="tab-content block space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">1. 變數與記憶體配置 (Variables & Memory)</h2>
+                <p class="text-stone-600 text-sm leading-relaxed mb-4">
+                    變數 (Variable) 是程式語言中最基本的核心元素之一。在 Python 中，變數通常是存放在電腦的<strong>主記憶體 (RAM)</strong> 中，像是一個貼有標籤的盒子用來儲存資料。
+                </p>
+
+                <!-- Core Concept Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-xl">📦</span>
+                            <h3 class="font-bold text-amber-900 text-base">記憶體空間 (Memory Box)</h3>
+                        </div>
+                        <p class="text-xs text-stone-600">變數名稱就像盒子的「標籤」，盒子內部存放數值、文字或布林等資料內容。</p>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-xl">⚡</span>
+                            <h3 class="font-bold text-indigo-900 text-base">動態型別 (Dynamic Type)</h3>
+                        </div>
+                        <p class="text-xs text-stone-600">Python 採用動態型別，變數佔用的空間是在<strong>程式執行時</strong>自動配置，<strong>不需事先宣告資料型態</strong>。</p>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-xl">🗑️</span>
+                            <h3 class="font-bold text-emerald-900 text-base">刪除變數 (del Keyword)</h3>
+                        </div>
+                        <p class="text-xs text-stone-600">可使用 <code class="bg-emerald-100 text-emerald-800 font-mono font-bold px-1 rounded">del 變數名稱</code> 刪除變數並釋放記憶體空間。</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Memory Inspector Simulation -->
+                <div class="bg-slate-900 text-white p-6 rounded-xl border border-slate-700 shadow-md">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
+                        <h3 class="font-bold text-amber-400 text-sm flex items-center space-x-2">
+                            <span>💻 實時動態記憶體監測器 (Dynamic Memory Inspector)</span>
+                        </h3>
+                        <span class="text-xs text-slate-400">點擊下方按鈕觀察記憶體區塊演變</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Code Action Buttons -->
+                        <div class="space-y-2">
+                            <button onclick="execMemCode('single')" class="w-full text-left p-2.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-mono transition flex justify-between items-center">
+                                <span>a = 5<br>b = 3.5<br>c = "Hello World"</span>
+                                <span class="bg-amber-500 text-slate-900 font-bold text-[10px] px-2 py-0.5 rounded">基本指派</span>
+                            </button>
+
+                            <button onclick="execMemCode('chained')" class="w-full text-left p-2.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-mono transition flex justify-between items-center">
+                                <span>a = b = c = 10</span>
+                                <span class="bg-blue-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">多重連鎖指派</span>
+                            </button>
+
+                            <button onclick="execMemCode('multiple')" class="w-full text-left p-2.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-mono transition flex justify-between items-center">
+                                <span>name, number = 'YLSH', 35</span>
+                                <span class="bg-purple-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">多變數解構指派</span>
+                            </button>
+
+                            <button onclick="execMemCode('delete')" class="w-full text-left p-2.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-mono transition flex justify-between items-center">
+                                <span>del b</span>
+                                <span class="bg-red-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">刪除變數 b</span>
+                            </button>
+                        </div>
+
+                        <!-- Visual RAM Slots -->
+                        <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
+                            <div class="text-xs text-slate-400 font-mono border-b border-slate-800 pb-1 flex justify-between">
+                                <span>RAM 記憶體位址 (Simulated Slots)</span>
+                                <span id="mem-status" class="text-emerald-400 font-bold">狀態：正常</span>
+                            </div>
+
+                            <div id="ram-display-grid" class="grid grid-cols-2 gap-2 text-xs font-mono">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: 命名規則 -->
+        <section id="tab-naming" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">2. 變數命名規則 (Naming Conventions)</h2>
+                <p class="text-stone-600 text-sm mb-4">
+                    在 Python 中設定識別字（變數名稱）時，必須遵守嚴格的語法規則，否則會導致語法錯誤 (SyntaxError)。
+                </p>
+
+                <!-- Rules Table -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <h3 class="font-bold text-emerald-900 text-sm mb-2 flex items-center space-x-1">
+                            <span>✅ 合法的命名規則</span>
+                        </h3>
+                        <ul class="text-xs text-stone-700 space-y-1.5 list-disc list-inside">
+                            <li>可以使用大小寫英文字母 (A-Z, a-z)。</li>
+                            <li>可以使用阿拉伯數字 (0-9)。</li>
+                            <li>可以使用底線 (<code class="bg-emerald-100 font-bold px-1">_</code>)。</li>
+                            <li>可以使用中文 (Python 3 支援)。</li>
+                            <li>建議使用具有<strong>明確意義</strong>的名稱 (如 <code class="bg-emerald-100 font-bold px-1">score</code>, <code class="bg-emerald-100 font-bold px-1">student_name</code>)。</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                        <h3 class="font-bold text-rose-900 text-sm mb-2 flex items-center space-x-1">
+                            <span>❌ 嚴格禁止事項 (Syntax Error)</span>
+                        </h3>
+                        <ul class="text-xs text-stone-700 space-y-1.5 list-disc list-inside">
+                            <li><strong>不能用阿拉伯數字作為開頭</strong> (例：<code class="line-through text-rose-600">3score</code>)。</li>
+                            <li><strong>大小寫有區別</strong> (<code class="font-bold">Score</code> 與 <code class="font-bold">score</code> 是不同變數)。</li>
+                            <li><strong>不能使用保留關鍵字</strong> (例：<code class="line-through text-rose-600">for</code>, <code class="line-through text-rose-600">if</code>, <code class="line-through text-rose-600">and</code>, <code class="line-through text-rose-600">as</code>)。</li>
+                            <li>不能包含特殊符號或空格 (例：<code class="line-through text-rose-600">total-score</code>, <code class="line-through text-rose-600">my score</code>)。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Interactive Naming Checker Sandbox -->
+                <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                    <h3 class="font-bold text-slate-800 text-base mb-1">🔍 變數名稱即時合法性測試工具</h3>
+                    <p class="text-xs text-stone-500 mb-4">輸入您想測試的變數名稱，系統將依據 Python 命名規則進行即時語法檢測：</p>
+
+                    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                        <input id="naming-input" type="text" placeholder="例如：student_score, 2024data, if, 姓名" value="my_score" oninput="checkVariableName()" class="flex-grow bg-white border border-stone-300 rounded-lg px-3 py-2 text-sm code-font focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="checkVariableName()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg shadow">驗證名稱</button>
+                    </div>
+
+                    <!-- Result Box -->
+                    <div id="naming-result" class="mt-4 p-4 rounded-lg font-mono text-xs border bg-white">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Python Keywords Reference Grid -->
+                <div class="mt-6 border-t pt-4">
+                    <h4 class="font-bold text-slate-800 text-sm mb-2">Python 常見保留關鍵字 (Reserved Keywords) - 不能做為變數名稱：</h4>
+                    <div class="flex flex-wrap gap-1.5 text-xs font-mono">
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">and</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">as</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">assert</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">break</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">class</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">continue</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">def</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">del</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">elif</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">else</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">except</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">False</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">for</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">from</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">if</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">import</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">in</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">is</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">None</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">not</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">or</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">return</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">True</span>
+                        <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded">while</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: 資料型態與轉換 -->
+        <section id="tab-types" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">3. 資料型態與轉換 (Data Types & Conversion)</h2>
+                <p class="text-stone-600 text-sm mb-4">
+                    Python 包含四大基本資料型態。當不同型態進行運算時，常常需要使用轉型函式（Casting）強制轉換資料型態。
+                </p>
+
+                <!-- 4 Basic Data Types Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                    <div class="p-3 bg-stone-50 border rounded-lg text-center">
+                        <div class="text-xs text-stone-500 font-mono">int</div>
+                        <div class="font-bold text-slate-800 text-sm mt-0.5">整數 (Integer)</div>
+                        <div class="text-[11px] text-indigo-600 font-mono mt-1">5, -10, 100</div>
+                    </div>
+                    <div class="p-3 bg-stone-50 border rounded-lg text-center">
+                        <div class="text-xs text-stone-500 font-mono">float</div>
+                        <div class="font-bold text-slate-800 text-sm mt-0.5">浮點數 (Float)</div>
+                        <div class="text-[11px] text-indigo-600 font-mono mt-1">3.5, 0.0, -2.8</div>
+                    </div>
+                    <div class="p-3 bg-stone-50 border rounded-lg text-center">
+                        <div class="text-xs text-stone-500 font-mono">bool</div>
+                        <div class="font-bold text-slate-800 text-sm mt-0.5">布林值 (Boolean)</div>
+                        <div class="text-[11px] text-indigo-600 font-mono mt-1">True, False</div>
+                    </div>
+                    <div class="p-3 bg-stone-50 border rounded-lg text-center">
+                        <div class="text-xs text-stone-500 font-mono">str</div>
+                        <div class="font-bold text-slate-800 text-sm mt-0.5">字串 (String)</div>
+                        <div class="text-[11px] text-indigo-600 font-mono mt-1">'Hello', '8'</div>
+                    </div>
+                </div>
+
+                <!-- Casting functions list -->
+                <div class="bg-stone-100 p-4 rounded-xl space-y-2 mb-6 text-xs">
+                    <h3 class="font-bold text-slate-800 text-sm">三大強制轉型函式 (Type Conversion Functions)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div class="bg-white p-2.5 rounded border">
+                            <span class="font-mono font-bold text-indigo-700">int(x)</span>: 強制轉換為整數
+                        </div>
+                        <div class="bg-white p-2.5 rounded border">
+                            <span class="font-mono font-bold text-indigo-700">float(x)</span>: 強制轉換為浮點數
+                        </div>
+                        <div class="bg-white p-2.5 rounded border">
+                            <span class="font-mono font-bold text-indigo-700">str(x)</span>: 強制轉換為字串
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Type Casting Experiment -->
+                <div class="bg-slate-900 text-slate-100 p-5 rounded-xl border border-slate-800">
+                    <h3 class="font-bold text-amber-400 text-sm mb-3">⚠️ 經典陷阱與 TypeError 模擬實驗 (Type Casting Lab)</h3>
+                    <p class="text-xs text-slate-400 mb-4">
+                        設定變數：<code class="text-emerald-400 font-mono">a = 5</code> (整數 int), <code class="text-emerald-400 font-mono">b = 3.5</code> (浮點數 float), <code class="text-emerald-400 font-mono">c = '8'</code> (字串 str)。請點選不同相加語法：
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2 text-xs">
+                            <button onclick="testCasting('a+b')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 flex justify-between">
+                                <span class="font-mono text-yellow-300">print(a + b)</span>
+                                <span class="text-slate-400">int + float</span>
+                            </button>
+                            <button onclick="testCasting('a+int_b')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 flex justify-between">
+                                <span class="font-mono text-yellow-300">print(a + int(b))</span>
+                                <span class="text-slate-400">int + int(3.5➔3)</span>
+                            </button>
+                            <button onclick="testCasting('a+c_error')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 flex justify-between border-red-500/50">
+                                <span class="font-mono text-red-400">print(a + c)</span>
+                                <span class="text-red-400 font-bold">❌ 觸發 TypeError</span>
+                            </button>
+                            <button onclick="testCasting('a+int_c')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 flex justify-between">
+                                <span class="font-mono text-yellow-300">print(a + int(c))</span>
+                                <span class="text-slate-400">5 + 8 (數值相加)</span>
+                            </button>
+                            <button onclick="testCasting('str_a+c')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 flex justify-between">
+                                <span class="font-mono text-yellow-300">print(str(a) + c)</span>
+                                <span class="text-slate-400">'5' + '8' (字串串接)</span>
+                            </button>
+                        </div>
+
+                        <!-- Console Output Display -->
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 font-mono text-xs flex flex-col justify-between">
+                            <div>
+                                <div class="text-slate-500 text-[10px] border-b border-slate-800 pb-1 mb-2">執行結果 Console Window</div>
+                                <div id="casting-output" class="text-emerald-400 font-bold whitespace-pre-wrap">請點擊左側選項進行測試</div>
+                            </div>
+                            <div id="casting-explanation" class="mt-3 pt-2 border-t border-slate-800 text-[11px] text-slate-400"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: print() 格式化輸出 -->
+        <section id="tab-print" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">4. print() 輸出函式與格式化 (Output Formatting)</h2>
+                <p class="text-stone-600 text-sm mb-4">
+                    <code class="bg-stone-200 px-1 rounded font-mono font-bold">print()</code> 是 Python 的基礎輸出函式，可搭配參數自訂分隔與換行，亦支援多種格式化寫法。
+                </p>
+
+                <!-- Syntax Breakdown -->
+                <div class="bg-stone-900 text-slate-100 p-4 rounded-xl font-mono text-xs mb-6 space-y-2">
+                    <div class="text-amber-400 font-bold">print(項目1 [, 項目2, ..., sep = 分隔字元, end = 結束字元])</div>
+                    <ul class="text-slate-300 text-[11px] space-y-1 list-disc list-inside font-sans">
+                        <li><strong>項目 (item)</strong>：可一次輸出多個項目（用逗號相隔）。</li>
+                        <li><strong>sep (separator)</strong>：項目之間的分隔符號，<strong>預設為空白字元</strong> <code class="font-mono bg-slate-800 px-1 text-amber-300">' '</code>。</li>
+                        <li><strong>end</strong>：結尾輸出字元，<strong>預設為換行字元</strong> <code class="font-mono bg-slate-800 px-1 text-amber-300">'\n'</code>。</li>
+                    </ul>
+                </div>
+
+                <!-- Interactive print parameter playground -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Left: Parameter simulator -->
+                    <div class="p-4 bg-stone-50 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm">🧪 1. sep 與 end 參數調校器</h3>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">sep 分隔字元：</label>
+                            <select id="print-sep" onchange="updatePrintSim()" class="w-full bg-white border border-stone-300 rounded p-1.5 text-xs code-font">
+                                <option value=" ">預設空白 ' '</option>
+                                <option value=", ">逗號加空格 ', '</option>
+                                <option value="---">連字號 '---'</option>
+                                <option value="\n">換行符號 '\n'</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">end 結束字元：</label>
+                            <select id="print-end" onchange="updatePrintSim()" class="w-full bg-white border border-stone-300 rounded p-1.5 text-xs code-font">
+                                <option value="\n">預設換行 '\n'</option>
+                                <option value=" ">空白 ' '</option>
+                                <option value=" END!\n">自訂文字 ' END!\n'</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-slate-900 text-slate-200 p-3 rounded font-mono text-xs">
+                            <div class="text-slate-400 text-[10px]">對應程式碼：</div>
+                            <div id="print-sim-code" class="text-amber-300 mt-1">print(5, 3.5, 8, True, sep=' ', end='\n')</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Output Preview -->
+                    <div class="p-4 bg-slate-950 text-emerald-400 rounded-xl border border-slate-800 font-mono text-xs flex flex-col justify-between">
+                        <div>
+                            <div class="text-slate-500 text-[10px] border-b border-slate-800 pb-1 mb-2"> Console Output 螢幕輸出：</div>
+                            <pre id="print-sim-result" class="whitespace-pre-wrap font-bold">5 3.5 8 True</pre>
+                        </div>
+                        <div class="text-[10px] text-slate-400 pt-2 border-t border-slate-800">
+                            提示：當 end 被設為空格時，下一次的 print 輸出會接續在同一列後方！
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Advanced Formats: .format() vs f-string -->
+                <h3 class="font-bold text-slate-800 text-base mb-3">進階格式化輸出：format() 與 f-string</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- .format() -->
+                    <div class="p-4 bg-indigo-50/70 border border-indigo-200 rounded-xl">
+                        <div class="font-bold text-indigo-900 text-sm mb-1">Method 1: 字串 .format()</div>
+                        <p class="text-xs text-stone-600 mb-2">參數依序填入大括號 <code class="bg-white px-1 font-mono">{0}, {1}, {2}</code> 中。</p>
+                        <div class="bg-slate-900 text-slate-200 p-2.5 rounded text-xs font-mono space-y-1">
+                            <div class="text-slate-400"># 預設索引或指定位置</div>
+                            <div>print("a={}, b={}".format(a, b))</div>
+                            <div>print("a={0}, b={1}".format(a, b))</div>
+                        </div>
+                    </div>
+
+                    <!-- f-string -->
+                    <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl">
+                        <div class="font-bold text-amber-900 text-sm mb-1">Method 2: f-string (現代最推薦寫法)</div>
+                        <p class="text-xs text-stone-600 mb-2">在字串前加 <code class="font-bold font-mono">f</code>，大括號內可直接放變數或指定小數點位數。</p>
+                        <div class="bg-slate-900 text-slate-200 p-2.5 rounded text-xs font-mono space-y-1">
+                            <div class="text-slate-400"># 小數點後兩位格式化 :.2f</div>
+                            <div>print(<span class="text-amber-300">f"a = {a}, b = {b:.2f}"</span>)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: input() 與字串切割 -->
+        <section id="tab-input" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">5. input() 輸入函式與字串切割 (.split())</h2>
+                <p class="text-stone-600 text-sm mb-4">
+                    使用 <code class="bg-stone-200 px-1 rounded font-mono font-bold">input()</code> 讀取使用者輸入。<strong>最核心的觀念：input() 取得的所有輸入，資料型態一律為字串 (str)！</strong>
+                </p>
+
+                <!-- Key Rules -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                        <h3 class="font-bold text-amber-900 text-sm">💡 數字輸入必須轉型 (Casting)</h3>
+                        <p class="text-xs text-stone-600">若需要進行數學運算，必須用 <code class="font-mono bg-white px-1">int()</code> 或 <code class="font-mono bg-white px-1">float()</code> 包裹：</p>
+                        <div class="bg-slate-900 text-slate-200 p-2 rounded text-xs font-mono">
+                            age = <span class="text-yellow-400">int</span>(input("輸入年齡: "))<br>
+                            w = <span class="text-yellow-400">float</span>(input("輸入體重: "))
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg space-y-2">
+                        <h3 class="font-bold text-indigo-900 text-sm">✂️ 一次輸入多個變數 (.split())</h3>
+                        <p class="text-xs text-stone-600">預設以「空白」進行切割，亦可傳入參數如 <code class="font-mono bg-white px-1">.split(',')</code> 改用逗號切割：</p>
+                        <div class="bg-slate-900 text-slate-200 p-2 rounded text-xs font-mono">
+                            a, b = input().split() <span class="text-slate-500"># 用空白拆分</span><br>
+                            a, b = int(a), int(b)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Terminal Simulator for input() & split() -->
+                <div class="bg-slate-900 text-slate-100 p-5 rounded-xl border border-slate-800">
+                    <h3 class="font-bold text-amber-400 text-sm mb-3">🖥️ input() 與 split() 終端機模擬器</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 mb-1">選擇測試案例模式：</label>
+                                <select id="input-mode-select" onchange="changeInputDemoMode()" class="w-full bg-slate-800 text-amber-300 border border-slate-700 rounded p-2 text-xs font-mono">
+                                    <option value="single_num">1. 單一數字轉型加法 (x = int(input()))</option>
+                                    <option value="split_space">2. 空格切割多變數 (a, b = input().split())</option>
+                                    <option value="split_comma">3. 逗號切割多變數 (s.split(','))</option>
+                                </select>
+                            </div>
+
+                            <div class="bg-slate-950 p-3 rounded border border-slate-800 text-xs font-mono">
+                                <div class="text-slate-500 text-[10px]">Python 程式碼：</div>
+                                <div id="input-demo-code" class="text-emerald-400 mt-1">x = input()\nx = int(x)\nprint(x + 1)</div>
+                            </div>
+                        </div>
+
+                        <!-- Terminal Interaction Box -->
+                        <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 font-mono text-xs flex flex-col justify-between">
+                            <div>
+                                <div class="text-slate-500 text-[10px] border-b border-slate-800 pb-2 mb-3">Interactive Terminal Console</div>
+                                <div id="terminal-prompt" class="text-slate-300 mb-2">請輸入數字 x:</div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-yellow-400 font-bold">&gt;</span>
+                                    <input id="terminal-user-input" type="text" value="10" class="flex-grow bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-500">
+                                    <button onclick="runTerminalSim()" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs rounded">送出</button>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 border-t border-slate-800 pt-3">
+                                <div class="text-[10px] text-slate-500">Console 輸出結果：</div>
+                                <div id="terminal-out" class="text-emerald-400 font-bold text-sm mt-1">11</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: 實作模擬器 -->
+        <section id="tab-lab" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Python 語法實作試驗室 (Interactive Code Lab)</h2>
+                <p class="text-xs text-stone-500 mb-4">寫入包含變數指派、資料型態轉換、f-string 與 print() 的 Python 程式碼並執行。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">編輯 Python 程式碼：</label>
+                        <textarea id="lab-code-input" rows="10" class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed">
+# 第二章：變數與輸出入實作練習
+a = 5
+b = 3.5
+c = "8"
+d = True
+
+# 轉型運算
+total = a + int(c)
+print(f"a + int(c) 的結果為: {total}")
+print(f"b 格式化為小數後兩位: {b:.2f}")
+print(a, b, c, d, sep=", ")
+</textarea>
+                        <button onclick="runLabSimulator()" class="mt-2 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition shadow">
+                            ▶ 執行程式碼 (Run Code)
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">終端機模擬 Output Console：</label>
+                        <div id="lab-console-output" class="w-full h-[230px] bg-slate-950 text-slate-200 font-mono text-xs p-3 rounded-lg overflow-y-auto space-y-1 border border-slate-800">
+                            <div class="text-stone-500"># 點擊執行按鈕查看結果...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: 隨堂測驗 -->
+        <section id="tab-quiz" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Ch02 變數與輸出入 - 隨堂知識測驗</h2>
+                <p class="text-xs text-stone-500 mb-6">測試您對本章變數指派、資料型態、轉型與 print/input 的掌握度</p>
+
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Q1 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">1. 關於 Python 的變數命名規則，下列何者為「合法」的變數名稱？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="A" class="text-indigo-600">
+                                <span>A. 2024_score (以數字開頭)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="B" class="text-indigo-600">
+                                <span>B. for (使用保留關鍵字)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="C" class="text-indigo-600">
+                                <span>C. student_name (包含底線與小寫字母)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">2. 執行 <code class="bg-stone-200 px-1">input()</code> 取得使用者輸入時，預設的資料型態為何？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="A" class="text-indigo-600">
+                                <span>A. 整數 (int)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="B" class="text-indigo-600">
+                                <span>B. 字串 (str)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="C" class="text-indigo-600">
+                                <span>C. 浮點數 (float)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">3. 程式碼 <code class="bg-stone-200 px-1">a = 5</code> 與 <code class="bg-stone-200 px-1">c = '8'</code>，若執行 <code class="bg-stone-200 px-1">print(a + c)</code> 會發生什麼情況？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="A" class="text-indigo-600">
+                                <span>A. 輸出 13</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="B" class="text-indigo-600">
+                                <span>B. 輸出 58</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="C" class="text-indigo-600">
+                                <span>C. 產生 TypeError (型態不相容錯誤)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">4. 在 f-string 語法中，若要把浮點數變數 b 格式化為「小數點後兩位」，應寫為：</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q4" value="A" class="text-indigo-600">
+                                <span>A. f"{b:.2f}"</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q4" value="B" class="text-indigo-600">
+                                <span>B. f"{b%2}"</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q4" value="C" class="text-indigo-600">
+                                <span>C. f"{format(b, 2)}"</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="checkQuizAnswers()" class="px-6 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-lg hover:bg-slate-800 transition">
+                        提交測驗答案
+                    </button>
+                    <div id="quiz-score-result" class="hidden font-bold text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-4 text-center text-xs border-t border-slate-800">
+        <p>第二章：變數、資料型態與輸出入 (Variables, Data Types, and I/O) 互動學習系統</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Reserved keywords list for Python
+        const PYTHON_KEYWORDS = [
+            'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 
+            'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 
+            'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 
+            'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 
+            'try', 'while', 'with', 'yield'
+        ];
+
+        // Navigation Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            const target = document.getElementById('tab-' + tabId);
+            if(target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.tab === tabId) {
+                    btn.classList.add('text-amber-400', 'bg-slate-800');
+                    btn.classList.remove('text-slate-300');
+                } else {
+                    btn.classList.remove('text-amber-400', 'bg-slate-800');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+
+            document.querySelectorAll('.nav-btn-m').forEach(btn => {
+                if(btn.dataset.tab === tabId) {
+                    btn.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
+                    btn.classList.remove('text-slate-300');
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-slate-900', 'font-bold');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+        }
+
+        // Memory Inspector Simulation Logic
+        function execMemCode(action) {
+            const grid = document.getElementById('ram-display-grid');
+            const status = document.getElementById('mem-status');
+
+            if(action === 'single') {
+                status.textContent = "狀態：分配單一變數記憶體";
+                status.className = "text-emerald-400 font-bold";
+                grid.innerHTML = `
+                    <div class="bg-slate-800 p-2.5 rounded border border-amber-500/50">
+                        <div class="text-amber-400 font-bold">a (int)</div>
+                        <div class="text-slate-200">Value: 5</div>
+                        <div class="text-[9px] text-slate-500">Address: 0x7FFF01</div>
+                    </div>
+                    <div class="bg-slate-800 p-2.5 rounded border border-blue-500/50">
+                        <div class="text-blue-400 font-bold">b (float)</div>
+                        <div class="text-slate-200">Value: 3.5</div>
+                        <div class="text-[9px] text-slate-500">Address: 0x7FFF02</div>
+                    </div>
+                    <div class="bg-slate-800 p-2.5 rounded border border-emerald-500/50 col-span-2">
+                        <div class="text-emerald-400 font-bold">c (str)</div>
+                        <div class="text-slate-200">Value: "Hello World"</div>
+                        <div class="text-[9px] text-slate-500">Address: 0x7FFF03</div>
+                    </div>
+                `;
+            } else if(action === 'chained') {
+                status.textContent = "狀態：連鎖指派 (指向同一個整數物件)";
+                status.className = "text-blue-400 font-bold";
+                grid.innerHTML = `
+                    <div class="bg-slate-800 p-3 rounded border border-indigo-500 col-span-2">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-indigo-300 font-bold">a, b, c 共同指向</span>
+                            <span class="bg-indigo-900 text-indigo-200 text-[10px] px-1.5 py-0.5 rounded">a = b = c = 10</span>
+                        </div>
+                        <div class="text-yellow-300 text-sm">Value: 10 (int)</div>
+                        <div class="text-[9px] text-slate-400 mt-1">Shared Address: 0x7FFF10</div>
+                    </div>
+                `;
+            } else if(action === 'multiple') {
+                status.textContent = "狀態：多變數同時指派";
+                status.className = "text-purple-400 font-bold";
+                grid.innerHTML = `
+                    <div class="bg-slate-800 p-2.5 rounded border border-purple-500/50">
+                        <div class="text-purple-300 font-bold">name (str)</div>
+                        <div class="text-slate-200">Value: "YLSH"</div>
+                        <div class="text-[9px] text-slate-500">Address: 0x7FFF0A</div>
+                    </div>
+                    <div class="bg-slate-800 p-2.5 rounded border border-purple-500/50">
+                        <div class="text-purple-300 font-bold">number (int)</div>
+                        <div class="text-slate-200">Value: 35</div>
+                        <div class="text-[9px] text-slate-500">Address: 0x7FFF0B</div>
+                    </div>
+                `;
+            } else if(action === 'delete') {
+                status.textContent = "狀態：已執行 del b (釋放記憶體)";
+                status.className = "text-red-400 font-bold";
+                grid.innerHTML = `
+                    <div class="bg-slate-800 p-2.5 rounded border border-amber-500/50">
+                        <div class="text-amber-400 font-bold">a (int)</div>
+                        <div class="text-slate-200">Value: 5</div>
+                    </div>
+                    <div class="bg-slate-900 p-2.5 rounded border border-red-500/40 text-slate-500">
+                        <div class="text-red-400 font-bold line-through">b (Deleted)</div>
+                        <div class="text-[10px] text-red-300">NameError: 'b' is not defined</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Variable Naming Checker Tool
+        function checkVariableName() {
+            const input = document.getElementById('naming-input').value.trim();
+            const resultEl = document.getElementById('naming-result');
+
+            if (!input) {
+                resultEl.className = "mt-4 p-3 rounded-lg font-mono text-xs bg-slate-100 text-slate-600 border";
+                resultEl.innerHTML = "請輸入欲測試的變數名稱...";
+                return;
+            }
+
+            // Check rules
+            if (PYTHON_KEYWORDS.includes(input)) {
+                resultEl.className = "mt-4 p-3 rounded-lg font-mono text-xs bg-red-50 border border-red-200 text-red-800";
+                resultEl.innerHTML = `❌ <strong>不合法名稱！</strong><br>原因：<code class="bg-red-100 px-1 font-bold">${input}</code> 是 Python 的保留關鍵字 (Keyword)，不能作為識別字名稱。`;
+                return;
+            }
+
+            if (/^[0-9]/.test(input)) {
+                resultEl.className = "mt-4 p-3 rounded-lg font-mono text-xs bg-red-50 border border-red-200 text-red-800";
+                resultEl.innerHTML = `❌ <strong>不合法名稱！</strong><br>原因：識別字名稱<strong>不能用阿拉伯數字作為開頭</strong>。`;
+                return;
+            }
+
+            if (/[!@#$%^&*()+\-=\[\]{};':"\\|,<>\/?\s]/.test(input)) {
+                resultEl.className = "mt-4 p-3 rounded-lg font-mono text-xs bg-red-50 border border-red-200 text-red-800";
+                resultEl.innerHTML = `❌ <strong>不合法名稱！</strong><br>原因：名稱中包含非法特殊符號或空格（僅允許底線 _）。`;
+                return;
+            }
+
+            // Valid
+            resultEl.className = "mt-4 p-3 rounded-lg font-mono text-xs bg-emerald-50 border border-emerald-200 text-emerald-900";
+            resultEl.innerHTML = `✅ <strong>合法變數名稱！</strong><br>名稱：<code class="bg-emerald-100 px-1 font-bold">${input}</code> 完全符合 Python 識別字規範。`;
+        }
+
+        // Type Casting Experiment
+        function testCasting(type) {
+            const out = document.getElementById('casting-output');
+            const exp = document.getElementById('casting-explanation');
+
+            if (type === 'a+b') {
+                out.textContent = "8.5";
+                out.className = "text-emerald-400 font-bold text-base";
+                exp.textContent = "說明：5 (int) + 3.5 (float) 自動隱式轉換為 8.5 (float)。";
+            } else if (type === 'a+int_b') {
+                out.textContent = "8";
+                out.className = "text-emerald-400 font-bold text-base";
+                exp.textContent = "說明：int(3.5) 將浮點數無條件無條件無條件捨去小數點變為 3，故 5 + 3 = 8。";
+            } else if (type === 'a+c_error') {
+                out.textContent = "TypeError: unsupported operand type(s) for +: 'int' and 'str'";
+                out.className = "text-red-400 font-bold text-xs";
+                exp.textContent = "說明：Python 無法直接將整數 (int) 與字串 (str) 進行相加，會引發 TypeError 崩潰！";
+            } else if (type === 'a+int_c') {
+                out.textContent = "13";
+                out.className = "text-emerald-400 font-bold text-base";
+                exp.textContent = "說明：int('8') 將字串 '8' 強制轉換為整數 8，5 + 8 = 13。";
+            } else if (type === 'str_a+c') {
+                out.textContent = "58";
+                out.className = "text-emerald-400 font-bold text-base";
+                exp.textContent = "說明：str(5) 將數字 5 轉為字串 '5'，'5' + '8' 進行字串串接，產出 '58'。";
+            }
+        }
+
+        // Update print() simulation
+        function updatePrintSim() {
+            const sep = document.getElementById('print-sep').value;
+            const end = document.getElementById('print-end').value;
+
+            const codeEl = document.getElementById('print-sim-code');
+            const resEl = document.getElementById('print-sim-result');
+
+            const sepEsc = sep === '\n' ? '\\n' : sep;
+            const endEsc = end === '\n' ? '\\n' : end;
+
+            codeEl.textContent = `print(5, 3.5, 8, True, sep='${sepEsc}', end='${endEsc}')`;
+
+            const arr = [5, 3.5, 8, 'True'];
+            resEl.textContent = arr.join(sep) + end;
+        }
+
+        // Terminal Demo Switcher for input()
+        function changeInputDemoMode() {
+            const mode = document.getElementById('input-mode-select').value;
+            const codeEl = document.getElementById('input-demo-code');
+            const promptEl = document.getElementById('terminal-prompt');
+            const inputEl = document.getElementById('terminal-user-input');
+
+            if(mode === 'single_num') {
+                codeEl.textContent = "x = input()\nx = int(x)\nprint(x + 1)";
+                promptEl.textContent = "請輸入整數 x:";
+                inputEl.value = "10";
+            } else if(mode === 'split_space') {
+                codeEl.textContent = "a, b = input().split()\nprint(int(a) + int(b))";
+                promptEl.textContent = "請輸入兩個數字 (以空格隔開):";
+                inputEl.value = "5 11";
+            } else if(mode === 'split_comma') {
+                codeEl.textContent = "a, b, c = input().split(',')\nprint(a, b, c)";
+                promptEl.textContent = "請輸入三個值 (以逗號隔開):";
+                inputEl.value = "1,2,3";
+            }
+            runTerminalSim();
+        }
+
+        // Run terminal simulator
+        function runTerminalSim() {
+            const mode = document.getElementById('input-mode-select').value;
+            const userVal = document.getElementById('terminal-user-input').value;
+            const outEl = document.getElementById('terminal-out');
+
+            try {
+                if (mode === 'single_num') {
+                    const num = parseInt(userVal);
+                    if(isNaN(num)) throw new Error("ValueError: invalid literal for int()");
+                    outEl.textContent = (num + 1).toString();
+                    outEl.className = "text-emerald-400 font-bold text-sm mt-1";
+                } else if (mode === 'split_space') {
+                    const parts = userVal.trim().split(/\s+/);
+                    if (parts.length < 2) throw new Error("ValueError: not enough values to unpack");
+                    const sum = parseInt(parts[0]) + parseInt(parts[1]);
+                    if(isNaN(sum)) throw new Error("ValueError: invalid literal for int()");
+                    outEl.textContent = sum.toString();
+                    outEl.className = "text-emerald-400 font-bold text-sm mt-1";
+                } else if (mode === 'split_comma') {
+                    const parts = userVal.split(',');
+                    outEl.textContent = parts.join(' ');
+                    outEl.className = "text-emerald-400 font-bold text-sm mt-1";
+                }
+            } catch (err) {
+                outEl.textContent = err.message;
+                outEl.className = "text-red-400 font-bold text-xs mt-1";
+            }
+        }
+
+        // Code Lab Simulator Logic
+        function runLabSimulator() {
+            const code = document.getElementById('lab-code-input').value;
+            const consoleEl = document.getElementById('lab-console-output');
+            consoleEl.innerHTML = '';
+
+            const lines = code.split('\n');
+            let vars = {};
+
+            lines.forEach((line, idx) => {
+                let trimmed = line.trim();
+                if(!trimmed || trimmed.startsWith('#')) return;
+
+                // Simple parser for print
+                if(trimmed.startsWith('print(')) {
+                    const content = trimmed.substring(6, trimmed.lastIndexOf(')'));
+                    
+                    // check if f-string
+                    if(content.startsWith('f"') || content.startsWith("f'")) {
+                        let strContent = content.substring(2, content.length - 1);
+                        // replace placeholders
+                        strContent = strContent.replace(/\{([^}]+)\}/g, (match, p1) => {
+                            if(p1.includes(':.2f')) {
+                                const varName = p1.replace(':.2f', '').trim();
+                                return vars[varName] !== undefined ? parseFloat(vars[varName]).toFixed(2) : match;
+                            }
+                            const trimmedP1 = p1.trim();
+                            return vars[trimmedP1] !== undefined ? vars[trimmedP1] : match;
+                        });
+                        appendConsole(strContent);
+                    } else if (content.includes('sep=')) {
+                        appendConsole("5, 3.5, 8, True");
+                    } else {
+                        appendConsole("運算完成 Output");
+                    }
+                } else if(trimmed.includes('=')) {
+                    const parts = trimmed.split('=');
+                    const varName = parts[0].trim();
+                    const valStr = parts[1].trim();
+
+                    if(!isNaN(valStr)) {
+                        vars[varName] = Number(valStr);
+                    } else if(valStr.startsWith('"') || valStr.startsWith("'")) {
+                        vars[varName] = valStr.substring(1, valStr.length - 1);
+                    } else if(valStr === 'True') {
+                        vars[varName] = true;
+                    } else if(valStr === 'False') {
+                        vars[varName] = false;
+                    } else {
+                        vars[varName] = valStr;
+                    }
+                }
+            });
+
+            if(consoleEl.children.length === 0) {
+                appendConsole("（程式執行完畢）");
+            }
+        }
+
+        function appendConsole(msg, isError = false) {
+            const consoleEl = document.getElementById('lab-console-output');
+            const div = document.createElement('div');
+            div.className = isError ? "text-red-400 font-bold" : "text-emerald-400 font-bold";
+            div.textContent = msg;
+            consoleEl.appendChild(div);
+        }
+
+        // Quiz Logic
+        function checkQuizAnswers() {
+            const answers = { q1: 'C', q2: 'B', q3: 'C', q4: 'A' };
+            let score = 0;
+
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+            const q4 = document.querySelector('input[name="q4"]:checked');
+
+            if(q1 && q1.value === answers.q1) score += 25;
+            if(q2 && q2.value === answers.q2) score += 25;
+            if(q3 && q3.value === answers.q3) score += 25;
+            if(q4 && q4.value === answers.q4) score += 25;
+
+            const scoreEl = document.getElementById('quiz-score-result');
+            scoreEl.classList.remove('hidden');
+
+            if(score === 100) {
+                scoreEl.className = "p-3 rounded bg-emerald-100 text-emerald-800 font-bold text-sm mt-3";
+                scoreEl.textContent = `🎉 太棒了！獲得滿分 100 分！完整掌握變數與輸出入概念。`;
+            } else {
+                scoreEl.className = "p-3 rounded bg-amber-100 text-amber-800 font-bold text-sm mt-3";
+                scoreEl.textContent = `測驗得分：${score} 分。請再回頭複習觀念並重新測試！`;
+            }
+        }
+
+        // Initialize default view state
+        window.addEventListener('DOMContentLoaded', () => {
+            execMemCode('single');
+            checkVariableName();
+            updatePrintSim();
+            runTerminalSim();
+        });
+    </script>
+</body>
+</html>

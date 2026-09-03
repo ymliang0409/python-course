@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一章：第一個程式 (The First Program) - 互動學習平台</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .code-font {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col">
+
+<!-- Chosen Palette: Slate & Amber Warm Neutral (Background: bg-stone-50, Cards: bg-white, Accents: indigo-600, amber-500, emerald-600, slate-700) -->
+
+<!-- Application Structure Plan:
+    1. Header & Navigation: Clean top navigation to switch seamlessly between logical knowledge modules (Language Intro, Python Features, Programming Thinking, VS Code Guide, Colab Guide, Syntax, Interactive Simulator & Quiz).
+    2. Section 1: 程式語言與轉換機制 - Interactive comparison between Compiler and Interpreter workflows using dynamic HTML visual flow cards + Chart.js abstraction chart.
+    3. Section 2: Python 簡介與特色 - Interactive feature highlight cards with full detail breakdown.
+    4. Section 3: 運算思維與寫作角色 - Dynamic breakdown of Programmer vs User role and problem solving steps.
+    5. Section 4: VS Code 實作指南 - Step-by-step visual tutorial covering project setups with simulated terminal view.
+    6. Section 5: Google Colab 雲端開發 - Interactive guide covering notebook controls and file menu simulation.
+    7. Section 6: 基礎語法 - Interactive comment playground (`#` and `"""`) and output function `print()`.
+    8. Section 7: 互動程式模擬器與隨堂測驗 - Practice running custom code snippets and test course knowledge.
+    Why: Transforms static content into an active learning workspace where students can visualize concepts and test code hands-on.
+-->
+
+<!-- Visualization & Content Choices:
+    - High/Low Level Languages: Interactive comparison cards + Chart.js Bar Chart showing Level of Abstraction vs Hardware Proximity.
+    - Compiler vs Interpreter Flow: Styled CSS step-by-step pipeline diagram (No SVG/Mermaid) with clickable toggle to switch between C/C++ compilation and Python interpretation.
+    - Programmer vs User Workflow: Responsive 2-column flex workflow breakdown.
+    - VS Code / Colab Tutorials: Tabbed Interactive Steppers with highlighted terminal and notebook controls.
+    - Code Simulator: Custom JS text editor & fake terminal output engine supporting print and comment parsing.
+-->
+
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="bg-amber-500 text-slate-900 font-bold px-2.5 py-1 rounded text-sm tracking-wide">Ch01</span>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">第一個程式 (The First Program)</h1>
+                    <p class="text-xs text-slate-400">完整數位互動課程筆記與實作平台</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-1 text-sm font-medium mt-2 md:mt-0" id="main-nav">
+                <button onclick="switchTab('concept')" class="nav-btn px-3 py-1.5 rounded-md transition text-amber-400 bg-slate-800" data-tab="concept">語言概念</button>
+                <button onclick="switchTab('python-overview')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="python-overview">Python特色</button>
+                <button onclick="switchTab('thinking')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="thinking">運算思維</button>
+                <button onclick="switchTab('vscode')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="vscode">VS Code實作</button>
+                <button onclick="switchTab('colab')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="colab">Colab教學</button>
+                <button onclick="switchTab('syntax-hw')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="syntax-hw">語法基礎</button>
+                <button onclick="switchTab('lab')" class="nav-btn px-3 py-1.5 rounded-md transition hover:bg-slate-800 text-slate-300" data-tab="lab">實作模擬器</button>
+            </nav>
+        </div>
+        <!-- Mobile Nav Menu Buttons -->
+        <div class="md:hidden flex overflow-x-auto px-4 py-2 space-x-2 text-xs bg-slate-800 scrollbar-none">
+            <button onclick="switchTab('concept')" class="nav-btn-m px-2.5 py-1 rounded bg-amber-500 text-slate-900 font-bold whitespace-nowrap" data-tab="concept">語言概念</button>
+            <button onclick="switchTab('python-overview')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="python-overview">Python特色</button>
+            <button onclick="switchTab('thinking')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="thinking">運算思維</button>
+            <button onclick="switchTab('vscode')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="vscode">VS Code</button>
+            <button onclick="switchTab('colab')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="colab">Google Colab</button>
+            <button onclick="switchTab('syntax-hw')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="syntax-hw">語法基礎</button>
+            <button onclick="switchTab('lab')" class="nav-btn-m px-2.5 py-1 rounded text-slate-300 hover:bg-slate-700 whitespace-nowrap" data-tab="lab">模擬試驗室</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: 語言概念 -->
+        <section id="tab-concept" class="tab-content block space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">1. 程式語言簡介 (Introduction to Programming Languages)</h2>
+                <p class="text-stone-600 leading-relaxed mb-4">
+                    本區塊介紹程式語言的核心分類與轉換機制。程式語言（Programming Language）主要是用來和電腦溝通，讓電腦幫助我們完成想做的事情。
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Low level vs High level -->
+                    <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                            <h3 class="font-bold text-lg text-slate-800">低階語言 (Low Level Language)</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-3">貼近硬體與機器碼，執行效率極高但人類不易直接閱讀與維護。</p>
+                        <ul class="space-y-2 text-sm text-stone-700 font-medium">
+                            <li class="bg-white p-2 rounded border border-stone-200 flex justify-between items-center">
+                                <span>機器語言 (Machine Language)</span>
+                                <span class="text-xs text-stone-500 bg-stone-100 px-2 py-0.5 rounded">0 與 1 二進位碼</span>
+                            </li>
+                            <li class="bg-white p-2 rounded border border-stone-200 flex justify-between items-center">
+                                <span>組合語言 (Assembly Language)</span>
+                                <span class="text-xs text-stone-500 bg-stone-100 px-2 py-0.5 rounded">助記碼指令</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-stone-50 p-5 rounded-lg border border-stone-200">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            <h3 class="font-bold text-lg text-slate-800">高階語言 (High Level Language)</h3>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-3">人類較易理解與撰寫，接近自然語言與數學語法，需轉換為機器語言後執行。</p>
+                        <div class="flex flex-wrap gap-2 text-sm">
+                            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-semibold rounded">Python</span>
+                            <span class="px-2.5 py-1 bg-blue-100 text-blue-800 font-semibold rounded">C / C++</span>
+                            <span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-semibold rounded">Java</span>
+                            <span class="px-2.5 py-1 bg-purple-100 text-purple-800 font-semibold rounded">Visual Basic</span>
+                            <span class="px-2.5 py-1 bg-stone-200 text-stone-700 rounded">Cobol</span>
+                            <span class="px-2.5 py-1 bg-stone-200 text-stone-700 rounded">Pascal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Compiler vs Interpreter Visualizer -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">高階語言轉換機制：直譯式 vs 編譯式</h3>
+                        <p class="text-xs text-stone-500 mt-1">點擊切換比較兩種高階語言轉換為機器語言（Machine Language）的流程差異</p>
+                    </div>
+                    <div class="mt-3 sm:mt-0 flex space-x-2">
+                        <button onclick="setExecutionMode('interpreter')" id="btn-mode-interpreter" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow">直譯式 (Python)</button>
+                        <button onclick="setExecutionMode('compiler')" id="btn-mode-compiler" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300">編譯式 (C/C++)</button>
+                    </div>
+                </div>
+
+                <div id="execution-flow-display" class="bg-stone-900 text-slate-100 p-6 rounded-xl font-mono text-sm relative overflow-hidden min-h-[220px] flex flex-col justify-center">
+                    <!-- Dynamic Content Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Visualization Chart -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-2">程式語言層級與抽象程度對照圖</h3>
+                <p class="text-xs text-stone-500 mb-4">展示不同語言在「人類可讀性」與「硬體執行親和度」之間的相對位置。</p>
+                <div class="chart-container">
+                    <canvas id="languageChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Python 特色 -->
+        <section id="tab-python-overview" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="text-3xl">🐍</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Python 簡介 (Python Overview)</h2>
+                        <p class="text-sm text-stone-600">Python 程式語言的核心觀念與特色解析</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg mb-6">
+                    <p class="text-slate-800 font-medium">
+                        Python 是一種<strong class="text-indigo-700">直譯式 (Interpreter)</strong> 的電腦程式語言 (Programming Language)，具有<strong class="text-indigo-700">物件導向 (Object-oriented)</strong> 的特性。
+                    </p>
+                </div>
+
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Python 的四大核心特色</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200 hover:shadow-md transition">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg mb-3">1</div>
+                        <h4 class="font-bold text-slate-800 mb-1">免費且開源</h4>
+                        <p class="text-xs text-stone-500">Open Source 自由軟體，全球開發者皆可免費下載使用與改進原始碼。</p>
+                    </div>
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200 hover:shadow-md transition">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg mb-3">2</div>
+                        <h4 class="font-bold text-slate-800 mb-1">簡單易學</h4>
+                        <p class="text-xs text-stone-500">語法簡潔清晰，貼近自然英文，大幅降低初學程式設計的門檻。</p>
+                    </div>
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200 hover:shadow-md transition">
+                        <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg mb-3">3</div>
+                        <h4 class="font-bold text-slate-800 mb-1">移植性較高</h4>
+                        <p class="text-xs text-stone-500">可在 Windows、macOS、Linux 等多種不同作業系統平台上無縫執行。</p>
+                    </div>
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200 hover:shadow-md transition">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mb-3">4</div>
+                        <h4 class="font-bold text-slate-800 mb-1">豐富第三方套件</h4>
+                        <p class="text-xs text-stone-500">擁有龐大的 Package 生態系，涵蓋 AI、數據分析、網頁爬蟲與遊戲開發。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: 運算思維與寫作角色 -->
+        <section id="tab-thinking" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">輸入程式碼 (Programming) 與運算思維</h2>
+                <p class="text-stone-600 text-sm mb-6">運算思維解析：何謂原始程式碼 (Source Code) 以及開發者與使用者的維度差異。</p>
+
+                <!-- Source code definition block -->
+                <div class="bg-stone-100 p-4 rounded-lg mb-6 flex items-start space-x-3">
+                    <span class="text-xl">💡</span>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">何謂「程式碼」(Source Code)？</h4>
+                        <p class="text-xs text-stone-600 mt-0.5">在文字編輯器中輸入的程式指令，一般稱為<strong>原始程式碼 (Source Code)</strong>，或簡稱為程式碼。</p>
+                    </div>
+                </div>
+
+                <!-- Role Comparison -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Programmer -->
+                    <div class="border-2 border-indigo-200 bg-indigo-50/50 p-5 rounded-xl">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="px-2 py-1 bg-indigo-600 text-white font-bold text-xs rounded">創作者角色</span>
+                            <h3 class="font-bold text-slate-800 text-lg">寫程式的人 (Developer)</h3>
+                        </div>
+                        <p class="text-xs text-stone-600 mb-4">必須運用<strong>運算思維 + 程式語言</strong>，根據輸入資料想出運算過程（即演算法設計），進而產生正確的輸出資料。</p>
+                        
+                        <div class="space-y-2">
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 text-xs font-medium text-indigo-900 flex items-center justify-between">
+                                <span>1. 問題分析</span>
+                                <span class="text-slate-400">➔</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 text-xs font-medium text-indigo-900 flex items-center justify-between">
+                                <span>2. 思考解題步驟 (演算法設計)</span>
+                                <span class="text-slate-400">➔</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 text-xs font-medium text-indigo-900 flex items-center justify-between">
+                                <span>3. 程式撰寫 (寫入 Source Code)</span>
+                                <span class="text-indigo-600 font-bold">完成</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User -->
+                    <div class="border-2 border-emerald-200 bg-emerald-50/50 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="px-2 py-1 bg-emerald-600 text-white font-bold text-xs rounded">使用者角色</span>
+                                <h3 class="font-bold text-slate-800 text-lg">使用者 (User)</h3>
+                            </div>
+                            <p class="text-xs text-stone-600 mb-4">使用者執行軟體時，無需了解內部的演算法細節，僅需要知道要輸入的資料以及獲得的輸出結果即可。</p>
+                            
+                            <div class="bg-white p-4 rounded-lg border border-emerald-100 text-xs text-emerald-900 space-y-2">
+                                <div class="flex justify-between border-b pb-2">
+                                    <span class="text-stone-500">輸入資料 (Input):</span>
+                                    <span class="font-mono font-bold">使用者操作/資料</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-2">
+                                    <span class="text-stone-500">軟體執行 (Execution):</span>
+                                    <span class="font-mono font-bold">背景黑盒子運算</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-stone-500">輸出資料 (Output):</span>
+                                    <span class="font-mono font-bold">最終結果顯示</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-xs text-emerald-700 bg-emerald-100/70 p-2.5 rounded text-center">
+                            簡單、直覺的互動介面是使用者最關心的核心體驗。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Software tools -->
+                <div class="mt-8 border-t pt-6">
+                    <h3 class="text-base font-bold text-slate-800 mb-3">四種常見的 Python 開發環境軟體</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-stone-50 p-3 rounded-lg border text-center">
+                            <div class="font-bold text-slate-800 text-sm">Python 官方軟體</div>
+                            <div class="text-[11px] text-stone-500 mt-1">IDLE 基礎環境</div>
+                        </div>
+                        <div class="bg-stone-50 p-3 rounded-lg border text-center">
+                            <div class="font-bold text-slate-800 text-sm">Anaconda Spyder</div>
+                            <div class="text-[11px] text-stone-500 mt-1">科學計算專用 IDE</div>
+                        </div>
+                        <div class="bg-indigo-50 border-indigo-200 p-3 rounded-lg border text-center">
+                            <div class="font-bold text-indigo-900 text-sm">Visual Studio Code</div>
+                            <div class="text-[11px] text-indigo-600 mt-1">單機輕量級強大編輯器</div>
+                        </div>
+                        <div class="bg-amber-50 border-amber-200 p-3 rounded-lg border text-center">
+                            <div class="font-bold text-amber-900 text-sm">Google Colab</div>
+                            <div class="text-[11px] text-amber-700 mt-1">雲端免安裝筆記本</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: VS Code 實作指南 -->
+        <section id="tab-vscode" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <div class="flex items-center space-x-3 mb-2">
+                    <span class="px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded">VS Code</span>
+                    <h2 class="text-2xl font-bold text-slate-800">Visual Studio Code - 第一個程式實作 SOP</h2>
+                </div>
+                <p class="text-sm text-stone-600 mb-6">完整圖解與實作步驟流程。</p>
+
+                <!-- Step-by-Step Interactive Guide -->
+                <div class="space-y-4">
+                    <!-- Step 1 -->
+                    <div class="border rounded-xl p-4 bg-stone-50 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="flex items-start space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">建立桌面專案資料夾</h4>
+                                <p class="text-xs text-stone-600">請先在桌面建立一資料夾，資料夾名稱命名為「<strong>學號</strong>」（例如：<code class="bg-stone-200 px-1 rounded">910001</code>）。</p>
+                            </div>
+                        </div>
+                        <span class="mt-2 sm:mt-0 text-xs bg-stone-200 text-stone-700 px-2 py-1 rounded">桌面操作</span>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="border rounded-xl p-4 bg-stone-50 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="flex items-start space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">開啟 VS Code 並載入資料夾</h4>
+                                <p class="text-xs text-stone-600">開啟 Visual Studio Code 軟體，將桌面建立的學號資料夾直接<strong>拖拉進 VS Code 視窗內</strong>，或從「開始 > 開啟資料夾」載入。</p>
+                            </div>
+                        </div>
+                        <span class="mt-2 sm:mt-0 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">VS Code 介面</span>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="border rounded-xl p-4 bg-stone-50 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="flex items-start space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">新增 Python 檔案與寫入指令</h4>
+                                <p class="text-xs text-stone-600">新增檔案並儲存，副檔名必須為 <code class="bg-amber-100 text-amber-900 font-bold px-1 rounded">.py</code>（例如：<code class="bg-stone-200 px-1 rounded">ex1.py</code>）。輸入輸出指令：</p>
+                                <div class="mt-2 bg-slate-900 text-emerald-400 p-2 rounded text-xs code-font">
+                                    print("Hello Wrold")
+                                </div>
+                                <p class="text-[11px] text-amber-600 mt-1">※ 註：範例字串寫法為 "Hello Wrold"。</p>
+                            </div>
+                        </div>
+                        <span class="mt-2 sm:mt-0 text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">副檔名 .py</span>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="border rounded-xl p-4 bg-stone-50 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="flex items-start space-x-3">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs shrink-0">4</span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm">開啟終端機並執行程式</h4>
+                                <p class="text-xs text-stone-600">點擊頂部選單「終端機(T) > 新增終端機」，在下方出現的 PowerShell/Command Prompt 中輸入執行指令：</p>
+                                <div class="mt-2 bg-slate-900 text-slate-100 p-2 rounded text-xs code-font">
+                                    PS C:\Users\10user\Desktop\910001> <span class="text-yellow-400">python ex1.py</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="mt-2 sm:mt-0 text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded">Terminal 執行</span>
+                    </div>
+                </div>
+
+                <!-- Simulated VS Code Window Visualizer -->
+                <div class="mt-6 border border-slate-700 rounded-lg overflow-hidden shadow-lg bg-slate-900 text-slate-200">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700 text-xs text-slate-400">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                            <span class="ml-2 text-slate-300 font-mono">ex1.py - 910001 - Visual Studio Code</span>
+                        </div>
+                        <span>Python 3.x</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 min-h-[180px]">
+                        <!-- Sidebar -->
+                        <div class="bg-slate-850 p-3 border-r border-slate-800 text-xs font-mono space-y-2 hidden md:block text-slate-400">
+                            <div class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">檔案總管</div>
+                            <div class="pl-2 font-bold text-slate-200">v 910001</div>
+                            <div class="pl-6 text-emerald-400 font-semibold">🐍 ex1.py</div>
+                        </div>
+                        <!-- Code Area -->
+                        <div class="p-4 col-span-3 font-mono text-sm space-y-4">
+                            <div class="flex items-center space-x-3 text-slate-400">
+                                <span class="text-slate-600">1</span>
+                                <span><span class="text-yellow-400">print</span>(<span class="text-amber-300">"Hello Wrold"</span>)</span>
+                            </div>
+                            
+                            <!-- Embedded Terminal UI -->
+                            <div class="mt-6 border-t border-slate-700 pt-3">
+                                <div class="flex space-x-4 text-xs text-slate-400 mb-2 border-b border-slate-800 pb-1">
+                                    <span>問題</span>
+                                    <span>輸出</span>
+                                    <span>偵錯主控台</span>
+                                    <span class="text-white border-b-2 border-blue-500 font-bold">終端機</span>
+                                </div>
+                                <div class="text-xs text-slate-300 space-y-1 font-mono bg-slate-950 p-2.5 rounded">
+                                    <div>PS C:\Users\10user\Desktop\910001> <span class="text-yellow-400">python ex1.py</span></div>
+                                    <div class="text-emerald-400 font-bold">Hello Wrold</div>
+                                    <div>PS C:\Users\10user\Desktop\910001> <span class="animate-pulse">_</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: Google Colab 雲端開發 -->
+        <section id="tab-colab" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <div class="flex items-center space-x-3 mb-2">
+                    <span class="px-2.5 py-1 bg-amber-500 text-slate-900 text-xs font-bold rounded">Google Colab</span>
+                    <h2 class="text-2xl font-bold text-slate-800">Google Colaboratory 雲端開發指南</h2>
+                </div>
+                <p class="text-sm text-stone-600 mb-6">免安裝、開啟即用的 Google 雲端筆記本完整流程。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left: Colab Steps -->
+                    <div class="space-y-4">
+                        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-lg">
+                            <h4 class="font-bold text-amber-900 text-sm mb-1">1. 登入與建立筆記本</h4>
+                            <p class="text-xs text-stone-600">登入學校 Google 帳號 ➔ 搜尋「Google Colab」 ➔ 點選「新增筆記本」。</p>
+                        </div>
+
+                        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-lg">
+                            <h4 class="font-bold text-amber-900 text-sm mb-1">2. 副檔名 `.ipynb` 與雲端位置</h4>
+                            <p class="text-xs text-stone-600">Colab 筆記本檔名為 <code class="bg-amber-200 text-amber-900 px-1 rounded font-mono">.ipynb</code>（如 <code class="bg-white px-1 rounded">ch01.ipynb</code>），自動儲存於 Google 雲端硬碟的 <strong class="text-slate-800">Colab Notebooks</strong> 資料夾中。</p>
+                        </div>
+
+                        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-lg">
+                            <h4 class="font-bold text-amber-900 text-sm mb-1">3. 程式碼儲存格與執行按鈕</h4>
+                            <p class="text-xs text-stone-600">在「程式碼儲存格」內撰寫程式，點擊左側的「▶ 執行按鈕」即可在下方直接呈現執行結果。</p>
+                        </div>
+
+                        <div class="p-4 bg-amber-50/60 border border-amber-200 rounded-lg">
+                            <h4 class="font-bold text-amber-900 text-sm mb-1">4. 下載 Python 程式檔 `.py`</h4>
+                            <p class="text-xs text-stone-600">點選頂部選單「檔案 ➔ 下載」，可自由選擇下載 <strong class="text-indigo-700">.ipynb</strong> 或 <strong class="text-indigo-700">下載 .py</strong> 程式檔。</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Colab Visual Simulator -->
+                    <div class="border border-stone-300 rounded-xl bg-white shadow-md p-4 flex flex-col justify-between">
+                        <div>
+                            <!-- Colab Header bar -->
+                            <div class="flex items-center justify-between border-b pb-3 mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-amber-600 text-lg">CO</span>
+                                    <span class="font-bold text-slate-800 text-sm">ch01.ipynb</span>
+                                    <span class="text-xs text-stone-400">☆</span>
+                                </div>
+                                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">RAM / 磁碟 已連線</span>
+                            </div>
+
+                            <!-- Menu simulated button -->
+                            <div class="text-xs text-stone-500 space-x-3 mb-4">
+                                <span class="hover:text-stone-800 cursor-pointer border-b-2 border-amber-500 font-bold text-slate-800">檔案</span>
+                                <span>編輯</span>
+                                <span>檢視</span>
+                                <span>插入</span>
+                                <span>執行階段</span>
+                                <span>工具</span>
+                                <span>說明</span>
+                            </div>
+
+                            <!-- Code Cell Simulation -->
+                            <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 relative space-y-2">
+                                <div class="text-[11px] text-stone-400 flex items-center space-x-2">
+                                    <span>[ ] 程式碼儲存格</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="runColabSim()" class="w-8 h-8 rounded-full bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center font-bold text-sm shadow">▶</button>
+                                    <input id="colab-input-code" type="text" value='print("Hello world!!")' class="flex-grow bg-white border border-stone-300 rounded px-2.5 py-1 text-xs code-font text-slate-800 focus:outline-none focus:border-amber-500">
+                                </div>
+                                <!-- Result Output -->
+                                <div class="mt-3 border-t border-stone-200 pt-2 pl-11">
+                                    <div class="text-[10px] text-stone-400">執行結果：</div>
+                                    <div id="colab-sim-output" class="text-xs font-mono font-bold text-slate-800 mt-0.5">Hello world!!</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Downloader simulated widget -->
+                        <div class="mt-4 pt-3 border-t text-xs flex justify-between items-center text-stone-600">
+                            <span>匯出格式：</span>
+                            <div class="space-x-2">
+                                <button onclick="alert('已下載 ch01.ipynb (模擬筆記本檔)')" class="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 rounded border text-slate-700">下載 .ipynb</button>
+                                <button onclick="alert('已下載 ch01.py (模擬 Python 程式檔)')" class="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded border border-indigo-200 font-medium">下載 .py</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: 語法基礎 -->
+        <section id="tab-syntax-hw" class="tab-content hidden space-y-6">
+            <!-- Syntax: Comments -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Python 基礎語法：註解 (Comments)</h2>
+                <p class="text-sm text-stone-600 mb-4">重點解析：註解是用來為程式碼提供說明，直譯器會自動忽略不執行。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Single line -->
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-slate-800">1. 單行註解</h3>
+                            <code class="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded text-xs">#</code>
+                        </div>
+                        <p class="text-xs text-stone-600 mb-3">使用井字號 <code class="bg-stone-200 px-1 rounded">#</code> 開頭，其後方該行的文字皆會被視為註解。</p>
+                        <div class="bg-slate-900 text-slate-200 p-3 rounded-lg text-xs font-mono">
+                            <span class="text-stone-500"># 這是一行單行註解</span><br>
+                            <span class="text-yellow-400">print</span>(<span class="text-amber-300">"Hello World"</span>) <span class="text-stone-500"># 可以在程式碼後方註解</span>
+                        </div>
+                    </div>
+
+                    <!-- Multi line -->
+                    <div class="p-5 bg-stone-50 rounded-xl border border-stone-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-bold text-slate-800">2. 多行註解</h3>
+                            <code class="bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded text-xs">""" ... """</code>
+                        </div>
+                        <p class="text-xs text-stone-600 mb-3">使用三個雙引號 <code class="bg-stone-200 px-1 rounded">"""</code> 包裹多行文字說明。</p>
+                        <div class="bg-slate-900 text-slate-200 p-3 rounded-lg text-xs font-mono">
+                            <span class="text-stone-500">"""<br>
+                            這是多行註解區塊<br>
+                            可以撰寫詳細說明<br>
+                            """</span><br>
+                            <span class="text-yellow-400">print</span>(<span class="text-amber-300">"Hello World"</span>)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: 實作模擬器 & 隨堂測驗 -->
+        <section id="tab-lab" class="tab-content hidden space-y-6">
+            <!-- Interactive Playground -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Python 代碼模擬執行器</h2>
+                <p class="text-xs text-stone-500 mb-4">輸入含有 <code class="bg-stone-100 px-1">print()</code> 指令與註解的 Python 程式碼，測試輸出結果。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">編輯 Python 程式碼：</label>
+                        <textarea id="lab-code-input" rows="7" class="w-full bg-slate-900 text-emerald-400 font-mono text-xs p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed">
+# 第一個 Python 程式練習
+print("Hello Wrold")
+print("歡迎來到 Python 程式設計！")
+"""
+這是多行註解測試
+直譯器不會印出這段文字
+"""
+</textarea>
+                        <button onclick="runLabSimulator()" class="mt-2 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition shadow">
+                            ▶ 執行程式碼 (Run Code)
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">終端機模擬 Console：</label>
+                        <div id="lab-console-output" class="w-full h-[175px] bg-slate-950 text-slate-200 font-mono text-xs p-3 rounded-lg overflow-y-auto space-y-1">
+                            <div class="text-stone-500"># Console Output...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Ch01 全章隨堂知識測驗</h2>
+                <p class="text-xs text-stone-500 mb-6">測試您對本章單元內容的掌握程度</p>
+
+                <div id="quiz-container" class="space-y-6">
+                    <!-- Quiz Item 1 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">1. 關於 Python 語言的敘述，下列何者正確？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="A" class="text-indigo-600">
+                                <span>A. Python 是一種低階語言，執行速度最快</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="B" class="text-indigo-600">
+                                <span>B. Python 是一種編譯式 (Compiled) 語言，會直接產生 .exe 檔</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q1" value="C" class="text-indigo-600">
+                                <span>C. Python 是直譯式語言、免費開源且具物件導向特性</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Item 2 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">2. 在 Google Colab 中撰寫的筆記本，檔案預設副檔名為何？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="A" class="text-indigo-600">
+                                <span>A. .py</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="B" class="text-indigo-600">
+                                <span>B. .ipynb</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q2" value="C" class="text-indigo-600">
+                                <span>C. .cpp</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Item 3 -->
+                    <div class="p-4 bg-stone-50 rounded-lg border border-stone-200">
+                        <p class="font-bold text-slate-800 text-sm mb-3">3. 在 Python 語法中，若要撰寫「多行註解」，應使用下列哪種符號？</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="A" class="text-indigo-600">
+                                <span>A. // 多行註解 //</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="B" class="text-indigo-600">
+                                <span>B. # 多行註解 #</span>
+                            </label>
+                            <label class="flex items-center space-x-2 p-2 bg-white rounded border hover:bg-stone-100 cursor-pointer">
+                                <input type="radio" name="q3" value="C" class="text-indigo-600">
+                                <span>C. """ 多行註解 """</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="checkQuizAnswers()" class="px-6 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-lg hover:bg-slate-800 transition">
+                        提交測驗答案
+                    </button>
+                    <div id="quiz-score-result" class="hidden font-bold text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-4 text-center text-xs border-t border-slate-800">
+        <p>第一章：第一個程式 (The First Program) 課程互動學習系統</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Tab Navigation Switcher
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Show target tab
+            const target = document.getElementById('tab-' + tabId);
+            if(target) target.classList.remove('hidden');
+
+            // Reset desktop Nav styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.dataset.tab === tabId) {
+                    btn.classList.add('text-amber-400', 'bg-slate-800');
+                    btn.classList.remove('text-slate-300');
+                } else {
+                    btn.classList.remove('text-amber-400', 'bg-slate-800');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+
+            // Reset mobile Nav styles
+            document.querySelectorAll('.nav-btn-m').forEach(btn => {
+                if(btn.dataset.tab === tabId) {
+                    btn.classList.add('bg-amber-500', 'text-slate-900', 'font-bold');
+                    btn.classList.remove('text-slate-300');
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-slate-900', 'font-bold');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+        }
+
+        // Execution Flow Simulation Toggle
+        function setExecutionMode(mode) {
+            const display = document.getElementById('execution-flow-display');
+            const btnInterpreter = document.getElementById('btn-mode-interpreter');
+            const btnCompiler = document.getElementById('btn-mode-compiler');
+
+            if(mode === 'interpreter') {
+                btnInterpreter.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
+                btnCompiler.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300";
+
+                display.innerHTML = `
+                    <div class="text-amber-400 font-bold mb-3 flex items-center space-x-2">
+                        <span>● 直譯式語言 (Interpreted Language) - 代表：Python</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-center text-xs">
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <div class="text-slate-400 text-[10px]">Step 1</div>
+                            <div class="text-emerald-400 font-bold mt-1">原始程式碼檔</div>
+                            <div class="text-[10px] text-stone-400">(.py 檔案)</div>
+                        </div>
+                        <div class="bg-indigo-900/60 p-3 rounded border border-indigo-500 flex flex-col justify-center">
+                            <div class="text-indigo-300 font-bold">直譯 (Interpreter)</div>
+                            <div class="text-[10px] text-indigo-200">逐行即時轉換</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                            <div class="text-slate-400 text-[10px]">Step 2</div>
+                            <div class="text-yellow-300 font-bold mt-1">多列機器語言碼</div>
+                        </div>
+                        <div class="bg-emerald-900/60 p-3 rounded border border-emerald-500 flex flex-col justify-center">
+                            <div class="text-emerald-300 font-bold">執行 (Run)</div>
+                            <div class="text-[10px] text-emerald-200">產出結果</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-4 leading-relaxed">
+                        說明：直譯器會逐行讀取原始程式碼檔並邊讀邊執行，開發除錯時反應迅速，無需預先產生可執行檔。
+                    </p>
+                `;
+            } else {
+                btnCompiler.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow";
+                btnInterpreter.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300";
+
+                display.innerHTML = `
+                    <div class="text-blue-400 font-bold mb-3 flex items-center space-x-2">
+                        <span>● 編譯式語言 (Compiled Language) - 代表：C / C++</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-xs">
+                        <div class="bg-slate-800 p-2.5 rounded border border-slate-700">
+                            <div class="text-slate-400 text-[10px]">Step 1</div>
+                            <div class="text-blue-300 font-bold mt-1">原始程式碼檔</div>
+                            <div class="text-[10px] text-stone-400">(.cpp)</div>
+                        </div>
+                        <div class="bg-slate-800 p-2.5 rounded border border-slate-700">
+                            <div class="text-indigo-300 font-bold">編譯 (Compiler)</div>
+                            <div class="text-[10px] font-bold text-yellow-300 mt-1">機器語言目的碼檔</div>
+                            <div class="text-[10px] text-stone-400">(.obj)</div>
+                        </div>
+                        <div class="bg-slate-800 p-2.5 rounded border border-slate-700">
+                            <div class="text-indigo-300 font-bold">連結 (Linker)</div>
+                            <div class="text-[10px] text-purple-300 mt-1">+ 函數库</div>
+                        </div>
+                        <div class="bg-slate-800 p-2.5 rounded border border-slate-700">
+                            <div class="text-slate-400 text-[10px]">Step 2</div>
+                            <div class="text-emerald-400 font-bold mt-1">可執行檔</div>
+                            <div class="text-[10px] text-stone-400">(.exe)</div>
+                        </div>
+                        <div class="bg-emerald-900/60 p-2.5 rounded border border-emerald-500 flex flex-col justify-center">
+                            <div class="text-emerald-300 font-bold">執行</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-4 leading-relaxed">
+                        說明：編譯式語言在執行前需經過「編譯」產生目的檔，並透過「連結」與函數庫整合生成獨立可執行檔 (.exe)，執行速度快但需重新編譯。
+                    </p>
+                `;
+            }
+        }
+
+        // Colab Interactive Simulation
+        function runColabSim() {
+            const input = document.getElementById('colab-input-code').value;
+            const outputEl = document.getElementById('colab-sim-output');
+            
+            if(input.includes('print(')) {
+                const match = input.match(/print\((['"])(.*?)\1\)/);
+                if(match && match[2] !== undefined) {
+                    outputEl.textContent = match[2];
+                    outputEl.className = "text-xs font-mono font-bold text-slate-800 mt-0.5";
+                } else {
+                    outputEl.textContent = "SyntaxError: 語法不符";
+                    outputEl.className = "text-xs font-mono font-bold text-red-600 mt-0.5";
+                }
+            } else {
+                outputEl.textContent = "(無輸出結果)";
+                outputEl.className = "text-xs font-mono text-stone-400 mt-0.5";
+            }
+        }
+
+        // Playground Simulator Engine
+        function runLabSimulator() {
+            const code = document.getElementById('lab-code-input').value;
+            const consoleEl = document.getElementById('lab-console-output');
+            consoleEl.innerHTML = ''; // clear console
+
+            const lines = code.split('\n');
+            let isMultiComment = false;
+            let outputLines = [];
+
+            lines.forEach((line, index) => {
+                let trimmed = line.trim();
+
+                // Multi line comment check
+                if(trimmed.includes('"""')) {
+                    const count = (trimmed.match(/"""/g) || []).length;
+                    if(count === 1) {
+                        isMultiComment = !isMultiComment;
+                        return;
+                    } else if(count >= 2) {
+                        return;
+                    }
+                }
+
+                if(isMultiComment) return;
+
+                // Single line comment
+                if(trimmed.startsWith('#')) return;
+
+                // Handle print logic
+                if(trimmed.includes('print(')) {
+                    // Strip inline comment if exists
+                    if(trimmed.includes('#')) {
+                        trimmed = trimmed.split('#')[0].trim();
+                    }
+                    const match = trimmed.match(/print\((['"])(.*?)\1\)/);
+                    if(match && match[2] !== undefined) {
+                        outputLines.push(match[2]);
+                    } else {
+                        outputLines.push(`[Line ${index + 1}] SyntaxError: 語法無效`);
+                    }
+                }
+            });
+
+            if(outputLines.length === 0) {
+                consoleEl.innerHTML = '<div class="text-stone-500">（程式碼執行完畢，無輸出結果）</div>';
+            } else {
+                outputLines.forEach(out => {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = out.includes('SyntaxError') ? 'text-red-400' : 'text-emerald-400';
+                    lineDiv.textContent = out;
+                    consoleEl.appendChild(lineDiv);
+                });
+            }
+        }
+
+        // Quiz Logic
+        function checkQuizAnswers() {
+            const answers = { q1: 'C', q2: 'B', q3: 'C' };
+            let score = 0;
+
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if(q1 && q1.value === answers.q1) score += 33.3;
+            if(q2 && q2.value === answers.q2) score += 33.3;
+            if(q3 && q3.value === answers.q3) score += 33.4;
+
+            const scoreEl = document.getElementById('quiz-score-result');
+            scoreEl.classList.remove('hidden');
+            
+            if(Math.round(score) === 100) {
+                scoreEl.className = "p-3 rounded bg-emerald-100 text-emerald-800 font-bold text-sm mt-3";
+                scoreEl.textContent = `🎉 太棒了！得分：100 分！完全掌握全章概念。`;
+            } else {
+                scoreEl.className = "p-3 rounded bg-amber-100 text-amber-800 font-bold text-sm mt-3";
+                scoreEl.textContent = `測驗得分：${Math.round(score)} 分。請回頭複習答錯的章節細節！`;
+            }
+        }
+
+        // Initialize Chart.js
+        window.addEventListener('DOMContentLoaded', () => {
+            setExecutionMode('interpreter');
+
+            const ctx = document.getElementById('languageChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['機器語言 (0/1)', '組合語言 (Assembly)', 'C / C++', 'Java / VB', 'Python'],
+                    datasets: [
+                        {
+                            label: '人類易讀性 (Abstraction Level)',
+                            data: [10, 35, 70, 85, 98],
+                            backgroundColor: 'rgba(79, 70, 229, 0.7)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '硬體執行親和度 (Hardware Control)',
+                            data: [100, 85, 60, 40, 25],
+                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' %';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
