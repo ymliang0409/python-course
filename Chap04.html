@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四章 流程圖與選擇結構 - 網頁教學版</title>
+    
+    <!-- 引入字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        python: {
+                            blue: '#306998',
+                            yellow: '#FFD43B',
+                            dark: '#1e293b',
+                            light: '#f1f5f9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 隱藏原生捲軸但保持可捲動 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        section { scroll-margin-top: 5rem; }
+
+        /* 內聯程式碼樣式 */
+        code.inline-code {
+            background-color: #f1f5f9;
+            color: #be123c;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        /* 內容區塊的通用樣式 */
+        .content-box {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* 流程圖形狀 CSS */
+        .shape-start-end { width: 60px; height: 30px; border-radius: 15px; border: 3px solid #306998; display: inline-block; }
+        .shape-process { width: 60px; height: 30px; border: 3px solid #306998; display: inline-block; }
+        .shape-io { width: 60px; height: 30px; border: 3px solid #306998; transform: skewX(-20deg); display: inline-block; }
+        .shape-decision { width: 40px; height: 40px; border: 3px solid #306998; transform: rotate(45deg); display: inline-block; margin: 5px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased selection:bg-python-yellow selection:text-python-dark font-sans">
+
+    <!-- 頂部導覽列 -->
+    <nav class="bg-python-dark text-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="font-bold text-xl flex items-center gap-2">
+                <i class="fa-brands fa-python text-python-yellow text-2xl"></i>
+                Python 程式設計課程
+            </div>
+            <div class="text-sm text-gray-300 hidden md:block">
+                Chapter 4: Flowchart and Selection Structure
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex flex-col lg:flex-row min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-8">
+        
+        <!-- 側邊導覽列 (Table of Contents) -->
+        <aside class="hidden lg:block w-72 shrink-0">
+            <div class="sticky top-24 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-python-blue"></i> 章節目錄
+                </h3>
+                <nav class="space-y-1.5 text-sm">
+                    <a href="#intro" class="block py-1.5 px-3 rounded-md text-gray-700 hover:bg-blue-50 hover:text-python-blue font-medium transition-colors">章節簡介</a>
+                    <a href="#flowchart" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">1. 流程圖 (Flowchart)</a>
+                    <a href="#algorithm" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">2. 演算法 (Algorithm)</a>
+                    <a href="#structure" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">3. 演算法基本結構</a>
+                    <a href="#if-statement" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">4. if 敘述 (單向選擇)</a>
+                    <a href="#if-else" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">5. if-else 敘述 (雙向選擇)</a>
+                    <a href="#if-elif" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">6. if-elif-else 敘述 (多向選擇)</a>
+                    <a href="#nested-if" class="block py-1.5 px-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-python-blue transition-colors">7. 巢狀選擇 (Nested if)</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 主要內容區 -->
+        <main class="flex-1 w-full max-w-4xl">
+            
+            <header id="intro" class="content-box relative overflow-hidden border-t-4 border-t-python-blue">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">第四章<br><span class="text-python-blue">流程圖與選擇結構</span></h1>
+                <p class="text-lg text-gray-600 mt-4 leading-relaxed bg-gray-50 p-4 rounded-lg border-l-4 border-python-yellow">
+                    本章節重點在於學習如何利用 <strong>流程圖</strong> 與 <strong>演算法</strong> 拆解問題，並掌握 Python 的 <strong>條件判斷與選擇結構</strong>，使程式能夠根據不同情況執行相應的邏輯。
+                </p>
+            </header>
+
+            <section id="flowchart">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span> 流程圖 (Flowchart)
+                </h2>
+                <div class="content-box">
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        <strong class="text-python-blue">流程圖表示法：</strong> 將解決問題的步驟與邏輯，用各種<span class="bg-yellow-100 font-bold px-1">標準化的符號圖形</span>來表示。
+                    </p>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fa-solid fa-shapes text-gray-400"></i> 標準流程圖符號</h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 mb-8">
+                        <table class="min-w-full text-center border-collapse bg-white">
+                            <thead>
+                                <tr class="bg-gray-100 border-b border-gray-200">
+                                    <th class="py-4 px-6 font-bold text-gray-700 w-1/4">名稱</th>
+                                    <th class="py-4 px-6 font-bold text-gray-700 w-1/4">圖形符號</th>
+                                    <th class="py-4 px-6 font-bold text-gray-700 w-1/2 text-left">意義</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 text-gray-700">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 font-bold">起止符號</td>
+                                    <td class="py-4 flex justify-center items-center h-[70px]"><div class="shape-start-end"></div></td>
+                                    <td class="py-4 text-left">表示事件的開始或結束</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 font-bold">流程符號</td>
+                                    <td class="py-4"><i class="fa-solid fa-arrow-down-long text-3xl text-python-blue"></i></td>
+                                    <td class="py-4 text-left">表示流程進行的方向</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 font-bold">輸入/輸出符號</td>
+                                    <td class="py-4 flex justify-center items-center h-[70px]"><div class="shape-io"></div></td>
+                                    <td class="py-4 text-left">表示資料的輸出或輸入</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 font-bold">處理符號</td>
+                                    <td class="py-4 flex justify-center items-center h-[70px]"><div class="shape-process"></div></td>
+                                    <td class="py-4 text-left">表示執行或處理的工作</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 font-bold">決策判斷符號</td>
+                                    <td class="py-4 flex justify-center items-center h-[70px]"><div class="shape-decision"></div></td>
+                                    <td class="py-4 text-left">表示對某一條件做判斷</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 範例圖示概念 -->
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                        <h4 class="font-bold text-gray-700 mb-4 flex items-center gap-2"><i class="fa-solid fa-traffic-light text-green-500"></i> 流程圖應用範例概念</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white p-4 shadow-sm border border-gray-100 rounded-lg">
+                                <strong class="text-python-blue block mb-2">範例一：過馬路判斷</strong>
+                                <ul class="text-sm text-gray-600 space-y-1 list-disc pl-4">
+                                    <li><span class="font-semibold text-gray-800">開始</span></li>
+                                    <li>判斷：<span class="text-yellow-600">號誌亮綠燈？</span></li>
+                                    <li>若 <strong>True</strong> &rarr; 過馬路</li>
+                                    <li>若 <strong>False</strong> &rarr; 停下等待</li>
+                                    <li><span class="font-semibold text-gray-800">結束</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-4 shadow-sm border border-gray-100 rounded-lg">
+                                <strong class="text-python-blue block mb-2">範例二：猜數字遊戲</strong>
+                                <ul class="text-sm text-gray-600 space-y-1 list-disc pl-4">
+                                    <li><span class="font-semibold text-gray-800">開始</span></li>
+                                    <li>處理：亂數產生 0~100 之間</li>
+                                    <li>輸入：使用者輸入猜測值</li>
+                                    <li>判斷：<span class="text-yellow-600">密碼值等於猜測值？</span></li>
+                                    <li>若 <strong>True</strong> &rarr; 輸出「猜對了」</li>
+                                    <li>若 <strong>False</strong> &rarr; 輸出「猜錯了」</li>
+                                    <li><span class="font-semibold text-gray-800">結束</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="algorithm">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span> 演算法 (Algorithm)
+                </h2>
+                
+                <div class="content-box">
+                    <div class="bg-python-dark text-white p-6 rounded-xl shadow-lg mb-6 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 opacity-10"><i class="fa-solid fa-microchip text-9xl"></i></div>
+                        <h3 class="text-xl font-bold text-python-yellow mb-2 relative z-10">什麼是演算法？</h3>
+                        <p class="text-lg leading-relaxed relative z-10">
+                            將問題分解成許多小步驟，然後再依一定的次序逐步執行，以解決特定問題的程序。
+                        </p>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-python-blue pl-3">演算法的五大特性 (Algorithm Features)</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-python-blue text-2xl mb-2"><i class="fa-solid fa-keyboard"></i></div>
+                            <h4 class="font-bold text-gray-800">1. 輸入 (Input)</h4>
+                            <p class="text-sm text-gray-600 mt-1">外界給予的資料，<strong>可有可無</strong> (0 個或多個)。</p>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-python-blue text-2xl mb-2"><i class="fa-solid fa-desktop"></i></div>
+                            <h4 class="font-bold text-gray-800">2. 輸出 (Output)</h4>
+                            <p class="text-sm text-gray-600 mt-1">執行後的結果，<strong>至少有一項</strong>。</p>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-python-blue text-2xl mb-2"><i class="fa-solid fa-crosshairs"></i></div>
+                            <h4 class="font-bold text-gray-800">3. 明確性 (Definiteness)</h4>
+                            <p class="text-sm text-gray-600 mt-1">每一個步驟都必須明確而清楚，不會產生歧義。</p>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-python-blue text-2xl mb-2"><i class="fa-solid fa-hourglass-end"></i></div>
+                            <h4 class="font-bold text-gray-800">4. 有限性 (Finiteness)</h4>
+                            <p class="text-sm text-gray-600 mt-1">必須在有限的步驟內完成，不能無限迴圈。</p>
+                        </div>
+                        <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-python-blue text-2xl mb-2"><i class="fa-solid fa-stopwatch"></i></div>
+                            <h4 class="font-bold text-gray-800">5. 有效性 (Effectiveness)</h4>
+                            <p class="text-sm text-gray-600 mt-1">每一個指令都可行，能在一定時間內推算出結果。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="structure">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span> 演算法基本結構
+                </h2>
+                <div class="content-box">
+                    <div class="space-y-8">
+                        
+                        <!-- 循序結構 -->
+                        <div class="flex flex-col md:flex-row gap-6 items-center">
+                            <div class="w-full md:w-1/2">
+                                <h3 class="text-xl font-bold text-python-blue mb-2"><i class="fa-solid fa-arrow-down-1-9"></i> 循序結構 (Sequential)</h3>
+                                <p class="text-gray-600">程式碼由上而下，一步一步循序地執行，不跳躍也不重複。</p>
+                            </div>
+                            <div class="w-full md:w-1/2 bg-gray-50 p-6 rounded-lg flex flex-col items-center border border-gray-200">
+                                <div class="bg-blue-100 text-blue-800 px-6 py-2 rounded-md font-mono text-sm border border-blue-200 w-32 text-center">敘述 1</div>
+                                <i class="fa-solid fa-arrow-down text-pink-500 my-2"></i>
+                                <div class="bg-blue-100 text-blue-800 px-6 py-2 rounded-md font-mono text-sm border border-blue-200 w-32 text-center">敘述 2</div>
+                                <i class="fa-solid fa-arrow-down text-pink-500 my-2"></i>
+                                <div class="bg-blue-100 text-blue-800 px-6 py-2 rounded-md font-mono text-sm border border-blue-200 w-32 text-center">敘述 3</div>
+                            </div>
+                        </div>
+
+                        <hr class="border-gray-100">
+
+                        <!-- 選擇結構 -->
+                        <div class="flex flex-col md:flex-row gap-6 items-center">
+                            <div class="w-full md:w-1/2">
+                                <h3 class="text-xl font-bold text-python-blue mb-2"><i class="fa-solid fa-code-branch"></i> 選擇結構 (Selection)</h3>
+                                <p class="text-gray-600">根據條件判斷的結果，選擇執行不同的程式碼分支。如 <code class="inline-code">if</code>、<code class="inline-code">if-else</code> 等指令。</p>
+                            </div>
+                            <div class="w-full md:w-1/2 bg-gray-50 p-6 rounded-lg flex flex-col items-center border border-gray-200">
+                                <i class="fa-solid fa-arrow-down text-pink-500 mb-2"></i>
+                                <div class="relative">
+                                    <div class="w-24 h-24 border-2 border-blue-400 rotate-45 transform origin-center bg-blue-50 flex items-center justify-center">
+                                        <span class="-rotate-45 font-bold text-blue-700 text-sm">條件式</span>
+                                    </div>
+                                    <div class="absolute top-1/2 -left-12 transform -translate-y-1/2 flex items-center">
+                                        <span class="mr-1 font-bold text-red-500 text-sm">False</span><i class="fa-solid fa-arrow-left text-pink-500"></i>
+                                    </div>
+                                    <div class="absolute top-1/2 -right-12 transform -translate-y-1/2 flex items-center">
+                                        <i class="fa-solid fa-arrow-right text-pink-500"></i><span class="ml-1 font-bold text-green-600 text-sm">True</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between w-full px-4 mt-6">
+                                    <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-md font-mono text-sm border border-blue-200">敘述 2</div>
+                                    <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-md font-mono text-sm border border-blue-200">敘述 1</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-gray-100">
+
+                        <!-- 重複結構 -->
+                        <div class="flex flex-col md:flex-row gap-6 items-center">
+                            <div class="w-full md:w-1/2">
+                                <h3 class="text-xl font-bold text-python-blue mb-2"><i class="fa-solid fa-rotate-right"></i> 重複結構 (Repetition)</h3>
+                                <p class="text-gray-600">重複執行某些程式碼，直到滿足(或不滿足)特定條件為止。如 <code class="inline-code">for</code>、<code class="inline-code">while</code> 等指令。</p>
+                            </div>
+                            <div class="w-full md:w-1/2 bg-gray-50 p-6 rounded-lg flex flex-col items-center border border-gray-200">
+                                <div class="relative flex flex-col items-center">
+                                    <i class="fa-solid fa-arrow-down text-pink-500 mb-2"></i>
+                                    <div class="w-20 h-20 border-2 border-blue-400 rotate-45 transform origin-center bg-blue-50 flex items-center justify-center relative z-10">
+                                        <span class="-rotate-45 font-bold text-blue-700 text-sm">條件式</span>
+                                    </div>
+                                    <div class="absolute top-1/2 right-[-60px] transform -translate-y-1/2">
+                                        <span class="font-bold text-red-500 text-sm">False</span>
+                                        <i class="fa-solid fa-arrow-right text-pink-500 ml-1"></i>
+                                    </div>
+                                    <div class="mt-8 flex flex-col items-center relative">
+                                        <div class="absolute -top-6 bg-white px-1 text-xs font-bold text-green-600 z-10">True</div>
+                                        <i class="fa-solid fa-arrow-down text-pink-500 mb-2"></i>
+                                        <div class="bg-blue-100 text-blue-800 px-6 py-2 rounded-md font-mono text-sm border border-blue-200">敘述</div>
+                                        
+                                        <!-- 迴圈箭頭示意 -->
+                                        <div class="absolute h-full w-12 border-l-2 border-b-2 border-t-2 border-pink-500 -left-12 top-[-60px] rounded-l-xl z-0" style="height: calc(100% + 75px);"></div>
+                                        <i class="fa-solid fa-caret-right text-pink-500 absolute -left-1 top-[-65px] text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section id="if-statement">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span> 單向選擇 (if statement)
+                </h2>
+                
+                <div class="content-box">
+                    <p class="text-gray-700 mb-6">唯有當條件式結果為 <code class="inline-code">True</code> 時，才會執行被指定的程式區塊。</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <!-- 語法 -->
+                        <div class="w-full md:w-5/12 bg-gray-50 border-l-4 border-python-yellow p-4 rounded-r-lg shadow-sm">
+                            <h4 class="font-bold text-gray-700 mb-2 font-mono">語法 (Syntax):</h4>
+                            <div class="font-mono text-lg text-python-dark bg-white p-4 rounded border border-gray-200">
+                                <span class="text-blue-600 font-bold">if</span> <span class="text-orange-500">條件式</span>:<br>
+                                <span class="ml-8 text-gray-600">程式區塊</span>
+                                <span class="text-xs text-red-500 block ml-8 mt-2">&larr; (一定要內縮/對齊)</span>
+                            </div>
+                        </div>
+
+                        <!-- 範例 -->
+                        <div class="w-full md:w-7/12">
+                            <h4 class="font-bold text-gray-700 mb-2 font-mono">範例 (Example):</h4>
+                            <div class="bg-python-dark rounded-xl overflow-hidden shadow-lg font-mono text-white text-sm">
+                                <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    <span class="text-gray-400 text-xs ml-2">if_example.py</span>
+                                </div>
+                                <div class="p-5">
+                                    <span class="text-blue-400 font-bold">if</span> a == <span class="text-green-400">1</span>:<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"The input is 1"</span>)<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"1 is positive"</span>)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="if-else">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span> 雙向選擇 (if ~ else statement)
+                </h2>
+                
+                <div class="content-box">
+                    <p class="text-gray-700 mb-6">條件成立時執行區塊 1；若<strong class="text-red-500">條件不成立</strong>，便會執行 <code class="inline-code">else:</code> 之後的敘述句 (區塊 2)。</p>
+
+                    <div class="bg-gray-50 border-l-4 border-python-blue p-4 rounded-r-lg shadow-sm mb-6 max-w-md">
+                        <h4 class="font-bold text-gray-700 mb-2 font-mono">語法 (Syntax):</h4>
+                        <div class="font-mono text-lg text-python-dark bg-white p-4 rounded border border-gray-200">
+                            <span class="text-blue-600 font-bold">if</span> <span class="text-orange-500">條件式</span>:<br>
+                            <span class="ml-8 text-gray-600">程式區塊1</span><br>
+                            <span class="text-blue-600 font-bold">else</span>:<br>
+                            <span class="ml-8 text-gray-600">程式區塊2</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <!-- Example 1 -->
+                        <div>
+                            <h4 class="font-bold text-gray-700 mb-2 font-mono">範例一 (判斷奇偶數):</h4>
+                            <div class="bg-python-dark rounded-xl overflow-hidden shadow-lg font-mono text-white text-sm h-full">
+                                <div class="p-5">
+                                    <span class="text-blue-400 font-bold">if</span> a % <span class="text-green-400">2</span> == <span class="text-green-400">0</span>:<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"%d is even"</span> % (a))<br>
+                                    <span class="text-blue-400 font-bold">else</span>:<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"%d is odd"</span> % (a))
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example 2 -->
+                        <div>
+                            <h4 class="font-bold text-gray-700 mb-2 font-mono">範例二 (判斷及格):</h4>
+                            <div class="bg-python-dark rounded-xl overflow-hidden shadow-lg font-mono text-white text-sm h-full">
+                                <div class="p-5">
+                                    <span class="text-blue-400 font-bold">if</span> score >= <span class="text-green-400">60</span>:<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"Pass!!"</span>)<br>
+                                    <span class="text-blue-400 font-bold">else</span>:<br>
+                                    <span class="ml-8 text-blue-300">print</span>(<span class="text-yellow-300">"Fail!!"</span>)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="if-elif">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span> 多向選擇 (if ~ elif ~ else statement)
+                </h2>
+                <div class="content-box bg-gradient-to-br from-white to-gray-50">
+                    <p class="text-gray-700 mb-6">當有多個條件需要依序判斷時 (else-if ladder)，使用 <code class="inline-code">elif</code> 可以讓結構更清晰。</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-8 items-center bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                        
+                        <!-- Flow Idea -->
+                        <div class="w-full md:w-5/12 border-r border-gray-200 pr-6 hidden md:block">
+                            <h4 class="font-bold text-gray-500 mb-4 text-center">條件階梯 (else-if ladder) 概念</h4>
+                            <div class="text-sm font-mono text-gray-600 space-y-2">
+                                <div class="bg-blue-50 p-2 rounded">Condition 1 <span class="text-green-600 font-bold text-xs ml-2">True &rarr; Statement 1</span></div>
+                                <div class="text-center text-xs text-red-400">&darr; False</div>
+                                <div class="bg-blue-50 p-2 rounded">Condition 2 <span class="text-green-600 font-bold text-xs ml-2">True &rarr; Statement 2</span></div>
+                                <div class="text-center text-xs text-red-400">&darr; False</div>
+                                <div class="bg-blue-50 p-2 rounded">Condition n <span class="text-green-600 font-bold text-xs ml-2">True &rarr; Statement n</span></div>
+                                <div class="text-center text-xs text-red-400">&darr; False</div>
+                                <div class="bg-gray-100 p-2 rounded">Else <span class="text-gray-600 font-bold text-xs ml-2">&rarr; Statement_else</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Code Example -->
+                        <div class="w-full md:w-7/12 font-mono text-white text-sm">
+                            <h4 class="font-bold text-gray-700 mb-2 font-sans">範例：成績等第判斷</h4>
+                            <div class="bg-python-dark p-6 rounded-xl shadow-inner leading-loose relative">
+                                <div class="absolute top-0 right-0 bg-python-yellow text-python-dark text-xs font-bold px-2 py-1 rounded-bl-lg">Example</div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">1</span> <span>g = <span class="text-blue-300">int</span>(<span class="text-blue-300">input</span>())</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">2</span> <span></span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">3</span> <span><span class="text-blue-400 font-bold">if</span> (g >= <span class="text-green-400">90</span>):</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">4</span> <span>    <span class="text-blue-300">print</span>(<span class="text-yellow-300">"A"</span>)</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">5</span> <span><span class="text-blue-400 font-bold">elif</span> (g >= <span class="text-green-400">80</span>):</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">6</span> <span>    <span class="text-blue-300">print</span>(<span class="text-yellow-300">"B"</span>)</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">7</span> <span><span class="text-blue-400 font-bold">elif</span> (g >= <span class="text-green-400">70</span>):</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">8</span> <span>    <span class="text-blue-300">print</span>(<span class="text-yellow-300">"C"</span>)</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">9</span> <span><span class="text-blue-400 font-bold">else</span>:</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">10</span> <span>    <span class="text-blue-300">print</span>(<span class="text-yellow-300">"D"</span>)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nested-if">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2 border-b-2 border-gray-200 pb-2">
+                    <span class="bg-python-blue text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">7</span> 巢狀選擇 (Nested if)
+                </h2>
+                <div class="content-box">
+                    <p class="text-gray-700 mb-6">
+                        在一個 <code class="inline-code">if</code> 或 <code class="inline-code">else</code> 結構內部，又包含了另一個完整的 <code class="inline-code">if...else</code> 結構，稱為巢狀結構。需特別注意<strong>縮排 (Indentation)</strong> 以區分層級。
+                    </p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        <!-- Before -->
+                        <div class="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                            <div class="bg-gray-100 p-3 border-b border-gray-200">
+                                <h4 class="font-bold text-gray-700 font-mono">基本語法結構</h4>
+                            </div>
+                            <div class="p-6 bg-white font-mono text-sm text-gray-700 flex-1 leading-relaxed">
+                                <span class="text-blue-600 font-bold">if</span> <span class="text-orange-500">condition 1</span>:<br>
+                                <span class="ml-8 text-blue-600 font-bold">if</span> <span class="text-orange-500">condition 2</span>:<br>
+                                <span class="ml-16 text-gray-500 italic">code block 1</span><br>
+                                <span class="ml-8 text-blue-600 font-bold">else</span>:<br>
+                                <span class="ml-16 text-gray-500 italic">code block 2</span><br>
+                                <span class="text-blue-600 font-bold">else</span>:<br>
+                                <span class="ml-8 text-blue-600 font-bold">if</span> <span class="text-orange-500">condition 3</span>:<br>
+                                <span class="ml-16 text-gray-500 italic">code block 3</span><br>
+                                <span class="ml-8 text-blue-600 font-bold">else</span>:<br>
+                                <span class="ml-16 text-gray-500 italic">code block 4</span>
+                            </div>
+                        </div>
+                        
+                        <!-- After -->
+                        <div class="flex-1 border-2 border-python-blue rounded-lg overflow-hidden flex flex-col relative shadow-md">
+                            <div class="absolute top-0 right-0 bg-python-blue text-white text-xs font-bold px-2 py-1 rounded-bl-lg">實例示範</div>
+                            <div class="bg-blue-50 p-3 border-b border-blue-200">
+                                <h4 class="font-bold text-python-blue font-sans">範例：車速判斷</h4>
+                            </div>
+                            <div class="p-4 bg-python-dark font-mono text-sm text-white flex-1 relative">
+                                <!-- Guide lines for indentation -->
+                                <div class="absolute border-l border-gray-600 opacity-50 h-[80%] left-[30px] top-[45px]"></div>
+                                <div class="absolute border-l border-gray-600 opacity-50 h-[45%] left-[55px] top-[65px]"></div>
+                                
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">1</span> <span>vel = <span class="text-blue-300">int</span>(<span class="text-blue-300">input</span>())</span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">2</span> <span></span></div>
+<div class="flex"><span class="w-6 text-gray-500 select-none text-right mr-3">3</span> <span><span class="text-blue-400 font-bold">if</span> (vel > <span class="text-green-400">60</span>):</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">4</span> <span>    <span class="text-blue-400 font-bold">if</span> (vel < <span class="text-green-400">100</span>):</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">5</span> <span>        <span class="text-blue-300">print</span>(<span class="text-yellow-300">"normal speed"</span>)</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">6</span> <span>    <span class="text-blue-400 font-bold">else</span>:</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">7</span> <span>        <span class="text-blue-300">print</span>(<span class="text-yellow-300">"too fast"</span>)</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">8</span> <span><span class="text-blue-400 font-bold">else</span>:</span></div>
+<div class="flex relative z-10"><span class="w-6 text-gray-500 select-none text-right mr-3">9</span> <span>    <span class="text-blue-300">print</span>(<span class="text-yellow-300">"too slow"</span>)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+            
+            <footer class="mt-12 border-t border-gray-200 pt-6 pb-12 text-center text-gray-500 text-sm">
+                <p>&copy; Python 程式設計課程. Chapter 4: Flowchart and Selection Structure.</p>
+            </footer>
+
+        </main>
+    </div>
+
+</body>
+</html>
